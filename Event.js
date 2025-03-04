@@ -27,3 +27,5 @@ const eventSchema = new mongoose.Schema({
         required: true,
     }
 })
+
+// hello
