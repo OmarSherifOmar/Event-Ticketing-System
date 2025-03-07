@@ -32,6 +32,7 @@ totalPrice: {
 }
 
 },{ timestamps: true });
+
 const Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;
 async function testBooking() {
