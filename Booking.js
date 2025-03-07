@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Define the Booking schema
+// 
 const bookingSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -20,8 +20,19 @@ const bookingSchema = new Schema({
   numberOfTickets: {
     type: Number,
     required: true
-  }
-});
+  },
+bookingStatus:{
+  type:String,
+  enum: ['Canceled', 'Confirmed', 'Pending'],
+  default: 'Pending'
+},
+totalPrice: {
+  type: Number, 
+  required: true
+}
+
+},{ timestamps: true });
+
 const Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;
 async function testBooking() {
