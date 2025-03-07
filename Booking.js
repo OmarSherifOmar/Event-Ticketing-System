@@ -13,13 +13,13 @@ const bookingSchema = new Schema({
     ref: 'Event',
     required: true
   },
-  bookingDate: {
-    type: Date,
-    default: Date.now
-  },
   numberOfTickets: {
     type: Number,
     required: true
+  },
+  BookedAt: {
+    type: Date,
+    default: Date.now
   },
 bookingStatus:{
   type:String,
@@ -31,7 +31,7 @@ totalPrice: {
   required: true
 }
 
-},{ timestamps: true });
+});
 
 const Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;
