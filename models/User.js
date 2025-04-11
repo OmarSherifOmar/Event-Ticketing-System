@@ -1,10 +1,7 @@
-require("dotenv").config();
 const mongoose = require("mongoose");
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect("mongodb://localhost/ETS")
+
 const userSchema= new mongoose.Schema({
     name:{
         type: String,
@@ -35,6 +32,7 @@ const userSchema= new mongoose.Schema({
     
 
 })
-module.exports = Event;
 
-const User = mongoose.model("Users", userSchema);
+
+const User = mongoose.model("User", userSchema);
+module.exports = User;

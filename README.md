@@ -11,7 +11,7 @@ A simple full-stack web app for browsing, booking, and managing event tickets.
 ## How to Run
 1. Clone the repo.
 2. Run `npm install mongoose`.
-3. Start the server with `Node {name of the run file}`.
+3. Start the server with `testRun.js`.
 4. Open `http://localhost:27017` in your browser.
 
 ---
