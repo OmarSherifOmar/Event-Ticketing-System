@@ -52,7 +52,43 @@ DeleteEvent: async(req,res)=>{
     catch(error){
         return res.status(500),json({message :error.message})
     }
-}
+},
+getAnalytics: async (req, res) => {
+    try {
+        const events = await Event.find({ organizerId: req.user.id });
+        if (!events) {
+            return res.status(404).json({ message: "No events found for this organizer." });
+        }
+        const analyticsData = events.map(event => ({
+            title: event.title,
+            bookedPercentage: (event.ticketsBooked / event.numberOfTickets) * 100
+        }));
 
+        return res.status(200).json(analyticsData);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+},
+
+statusEvent: async (req, res) => {
+    try {
+        const vstatus = ['approved', 'pending', 'declined'];
+        const nstatus = req.body.status;
+
+        if (!vstatus.includes(nstatus)) {
+            return res.status(400).json({ message: "Invalid status." });
+        }
+
+        const uEvents = await eventsmodel.findByIdAndUpdate(req.params.id,{ status: nstatus },{ new: true });
+
+        if (!uEvents) {
+            return res.status(404).json({ message: "Event not found." });
+        }
+
+        return res.status(200).json({ uEvents, msg: "Event status updated successfully" });
+    } catch (e) {
+        return res.status(500).json({ message: e.message });
+    }
+}
 
 }

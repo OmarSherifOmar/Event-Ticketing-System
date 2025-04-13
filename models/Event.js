@@ -46,6 +46,11 @@ const eventSchema = new mongoose.Schema({
     createdAt: {
       type: Date,
       default: Date.now
+    },
+    status: {
+      type: String,
+      enum: ['approved','pending', 'declined'],
+      default: 'pending'
     }
 });
 const Event = mongoose.model('Event', eventSchema);

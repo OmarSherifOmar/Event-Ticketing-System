@@ -4,7 +4,7 @@
   "description": "",
   "main": "Event.js",
   "scripts": {
-    "devStart": "Event.js"
+    "devStart": "app.js"
   },
   "repository": {
     "type": "git",
