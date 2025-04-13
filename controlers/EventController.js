@@ -12,6 +12,15 @@ getALLEvents : async (req, res) => {
     }
   
 },
+getEvent:async(req,res)=>{
+    try{
+        const event=await eventsmodel.findById(req.params.id);
+        return res.status(200).json(event)
+    }
+    catch(e){
+        return res.status(500).json({message:e.message})
+    }
+},
 PostEvent: async(req,res)=>{
    
         const Event1 =new eventsmodel({
@@ -24,8 +33,9 @@ PostEvent: async(req,res)=>{
             ticketPricing: req.body.ticketPricing,
             totalTickets: req.body.totalTickets,
             remainingTickets: req.body.remainingTickets,
-
-
+            organizer: req.body.organizer,
+            createdAt: req.body.createdAt,
+            status:req.body.status,
         })
         try{
             const newEvent=await Event1.save();
