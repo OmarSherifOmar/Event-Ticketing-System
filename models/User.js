@@ -1,20 +1,19 @@
+// filepath: c:\Users\Karim\Desktop\Event-Ticketing-System-2\models\User.js
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost/ETS")
-
-const userSchema= new mongoose.Schema({
-    name:{
+const userSchema = new mongoose.Schema({
+    name: {
         type: String,
-        required:true
+        required: true
     },
-    email:{
+    email: {
         type: String,
-        required:true,
-        unique:true
+        required: true,
+        unique: true
     },
-    profilepicture:{
-        type:String,
-        required:true,
+    profilepicture: {
+        type: String,
+        required: true
     },
     password: {
         type: String,
@@ -25,14 +24,11 @@ const userSchema= new mongoose.Schema({
         enum: ['Standard User', 'Organizer', 'System Admin'],
         default: 'Standard User'
     },
-      createdAt: {
+    createdAt: {
         type: Date,
         default: Date.now
-      }
-    
-
-})
-
+    }
+});
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
