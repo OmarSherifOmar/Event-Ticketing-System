@@ -9,6 +9,7 @@ const app = express();
 // Debugging environment variables
 console.log("DB_URL:", process.env.DB_URL);
 console.log("PORT:", process.env.PORT);
+console.log("ORIGIN:", process.env.ORIGIN);
 
 // Middleware setup
 app.use(express.json());
@@ -16,17 +17,22 @@ app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(cookieParser());
 
 // Routes
-const authRoutes = require('./routes/authRoute.js');
-app.use('/api/v1', authRoutes);
+try {
+    const authRoutes = require('./routes/authRoute.js');
+    app.use('/api/v1', authRoutes);
 
-const userRoutes = require('./routes/UserRoutes');
-app.use('/api/v1/users', userRoutes);
+    const userRoutes = require('./routes/UserRoutes');
+    app.use('/api/v1/users', userRoutes);
+} catch (error) {
+    console.error("Error loading routes:", error.message);
+    process.exit(1);
+}
 
 // Connect to MongoDB Atlas
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("Connected to MongoDB Atlas"))
     .catch((err) => {
-        console.error("DB connection error:", err);
+        console.error("DB connection error:", err.message);
         process.exit(1);
     });
 

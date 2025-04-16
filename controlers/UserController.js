@@ -45,25 +45,29 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-      
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        
         const token = jwt.sign(
             { id: user._id, role: user.role },
-            JWT_SECRET,
+            process.env.SECRET_KEY,
             { expiresIn: "1h" }
         );
+
+        // Set the token in a cookie
+        res.cookie("token", token, {
+            httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+            secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+            maxAge: 3600000, // 1 hour
+        });
 
         res.status(200).json({ message: "Login successful", token });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
 };
-
 
 // Update user profile
 exports.updateProfile = async (req, res) => {
@@ -110,4 +114,104 @@ exports.getAllUsers = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-// Get a single user by ID
+// Update user's role (Admin only)
+exports.updateUserRole = async (req, res) => {
+    try {
+        const userId = req.params.id; // Extract user ID from the route parameter
+        const { role } = req.body; // Extract the new role from the request body
+
+        // Validate the role
+        const validRoles = ['Standard User', 'Organizer', 'System Admin'];
+        if (!validRoles.includes(role)) {
+            return res.status(400).json({ message: "Invalid role. Valid roles are: 'Standard User', 'Organizer', 'System Admin'" });
+        }
+
+        // Update the user's role
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { role },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "User role updated successfully", updatedUser });
+    } catch (error) {
+        console.error("Error updating user role:", error); // Log the error
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+// Get a single user by ID (Admin only)
+exports.getUserById = async (req, res) => {
+    try {
+        const userId = req.params.id; // Extract user ID from the route parameter
+
+        // Validate the user ID
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid user ID format" });
+        }
+
+        // Fetch the user from the database
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user); // Return the user details
+    } catch (error) {
+        console.error("Error fetching user by ID:", error); // Log the error
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+// Get current user's profile (Authenticated Users)
+
+exports.getCurrentUserProfile = async (req, res) => {
+    try {
+        const userId = req.user.id; // Extract user ID from the JWT (set by authentication middleware)
+
+        // Fetch the user from the database
+        const user = await User.findById(userId).select("-password"); // Exclude the password field
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user); // Return the user details
+    } catch (error) {
+        console.error("Error fetching current user's profile:", error); // Log the error
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+const crypto = require("crypto");
+
+exports.forgetPassword = async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+
+        // Validate input
+        if (!email || !newPassword) {
+            return res.status(400).json({ message: "Email and new password are required" });
+        }
+
+        // Find the user by email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error("Error updating password:", error); // Log the error
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};

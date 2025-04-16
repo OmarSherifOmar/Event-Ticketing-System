@@ -1,13 +1,23 @@
 const express = require("express");
-const { deleteUser, getAllUsers } = require("../controlers/UserController"); // Import deleteUser and getAllUsers
+const { deleteUser, getAllUsers, updateUserRole, getUserById, getCurrentUserProfile } = require("../controlers/UserController");
+const authenticate = require("../middleware/authentication");
+const authorizationMiddleware = require("../middleware/authorization"); // Import authorizationMiddleware
 
 const router = express.Router();
 
-// * Get all users route
+// * Get current user's profile (Authenticated Users)
+router.get('/profile', authenticate, getCurrentUserProfile);
 
-router.get('/', getAllUsers);
+// * Get all users route (System Admin only)
+router.get('/', authenticate, authorizationMiddleware(['System Admin']), getAllUsers);
 
-// * Delete user route
-router.delete('/:id', deleteUser);
+// * Get a single user by ID (System Admin only)
+router.get('/:id', authenticate, authorizationMiddleware(['System Admin']), getUserById);
 
-module.exports = router; // Export the router
+// * Update user's role route (System Admin only)
+router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), updateUserRole);
+
+// * Delete user route (System Admin only)
+router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
+
+module.exports = router;
