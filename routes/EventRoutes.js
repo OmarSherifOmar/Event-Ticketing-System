@@ -8,6 +8,6 @@ router.post("/events",authorizationMiddleware(["Organizer"]),EventController.Pos
 router.get("/events/:id",authorizationMiddleware(["Organizer","Standard User","System Admin"]),EventController.getEvent);
 router.put("/events/:id",authorizationMiddleware(["Organizer","System Admin"]),EventController.EditEvent);
 router.delete("/events/:id",authorizationMiddleware(["Organizer","System Admin"]),EventController.DeleteEvent);
-
-
+router.get("/users/events", authorizationMiddleware(["Organizer"]), EventController.getUserEvents);
+router.get("/users/events/analytics", authorizationMiddleware(["Organizer"]), EventController.getAnalytics);
 module.exports=router ;
