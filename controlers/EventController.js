@@ -21,6 +21,19 @@ getEvent:async(req,res)=>{
         return res.status(500).json({message:e.message})
     }
 },
+
+getUserEvent: async(req,res)=>{
+    try{
+        const events = await eventsmodel.find({organiser: req.user.id});
+        if(!events || events.length === 0){
+            return res.status(404).json({message: "No events found"})
+        }
+        return res.status(200).json(events);
+
+    }catch(e){
+        return res.status(500).json({message: e.message})
+    }
+},
 PostEvent: async(req,res)=>{
    
         const Event1 =new eventsmodel({
@@ -65,7 +78,7 @@ DeleteEvent: async(req,res)=>{
 },
 getAnalytics: async (req, res) => {
     try {
-        const events = await Event.find({ organizerId: req.user.id });
+        const events = await eventsmodel.find({ organizer: req.user.id });
         if (!events) {
             return res.status(404).json({ message: "No events found for this organizer." });
         }
