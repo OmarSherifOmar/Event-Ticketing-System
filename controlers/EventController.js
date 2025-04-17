@@ -1,5 +1,5 @@
 
-const eventsmodel = require('..\models\Event.js')
+const eventsmodel = require('../models/Event')
 
 const EventController={
 getALLEvents : async (req, res) => {
@@ -34,30 +34,31 @@ getUserEvent: async(req,res)=>{
         return res.status(500).json({message: e.message})
     }
 },
-PostEvent: async(req,res)=>{
-   
-        const Event1 =new eventsmodel({
-            title: req.body.title,
-            description: req.body.description,
-            date: req.body.date,
-            location: req.body.location,
-            category: req.body.category,
-            image: req.body.image,
-            ticketPricing: req.body.ticketPricing,
-            totalTickets: req.body.totalTickets,
-            remainingTickets: req.body.remainingTickets,
-            organizer: req.body.organizer,
-            createdAt: req.body.createdAt,
-            status:req.body.status,
-        })
-        try{
-            const newEvent=await Event1.save();
-            return res.status(201).json(newEvent);
-        }
-        catch(e){
-            return res.status(500).json({message: e.message})
-        }
-    },
+PostEvent: async (req, res) => {
+    const organizerId = req.body.organizer?.id || req.body.organizer; // Handle both formats
+
+    const Event1 = new eventsmodel({
+        title: req.body.title,
+        description: req.body.description,
+        date: req.body.date,
+        location: req.body.location,
+        category: req.body.category,
+        image: req.body.image,
+        ticketPricing: req.body.ticketPricing,
+        totalTickets: req.body.totalTickets,
+        remainingTickets: req.body.remainingTickets,
+        organizer: organizerId, // Use the extracted organizer ID
+        createdAt: req.body.createdAt,
+        status: req.body.status,
+    });
+
+    try {
+        const newEvent = await Event1.save();
+        return res.status(201).json(newEvent);
+    } catch (e) {
+        return res.status(500).json({ message: e.message });
+    }
+},
 EditEvent: async(req,res)=>{
     try{
         const Event1=await eventsmodel.findByIdAndUpdate(req.params.id,req.body);
@@ -115,4 +116,6 @@ statusEvent: async (req, res) => {
 }
 
 }
+module.exports = EventController;
+
 

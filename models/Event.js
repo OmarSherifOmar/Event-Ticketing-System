@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/ETS")
+
 
 const eventSchema = new mongoose.Schema({
     title: {
@@ -23,7 +23,7 @@ const eventSchema = new mongoose.Schema({
         required: true,
     },
     image: {
-        type: Image,
+        type: String,
         required: true,
     },
     ticketPricing: {

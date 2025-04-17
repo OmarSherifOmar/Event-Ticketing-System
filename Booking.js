@@ -24,25 +24,3 @@ const bookingSchema = new Schema({
 });
 const Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;
-async function testBooking() {
-  try {
-    await mongoose.connect('mongodb://localhost:27017/event-ticketing', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    const newBooking = new Booking({
-      user: new mongoose.Types.ObjectId(), 
-      event: new mongoose.Types.ObjectId(), 
-      numberOfTickets: 2
-    });
-
-    await newBooking.save();
-    console.log("Booking added:", newBooking);
-  } catch (error) {
-    console.error("Error adding booking:", error);
-  } finally {
-    mongoose.connection.close();
-  }
-}
-
-testBooking();
