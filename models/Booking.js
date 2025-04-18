@@ -15,7 +15,7 @@ const bookingSchema = new Schema({
   },
   numberOfTickets: {
     type: Number,
-    required: true
+    required: true 
   },
   BookedAt: {
     type: Date,
