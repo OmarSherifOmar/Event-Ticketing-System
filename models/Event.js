@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/ETS")
+
 
 const eventSchema = new mongoose.Schema({
     title: {
@@ -23,7 +23,7 @@ const eventSchema = new mongoose.Schema({
         required: true,
     },
     image: {
-        type: Image,
+        type: String,
         required: true,
     },
     ticketPricing: {
@@ -46,6 +46,11 @@ const eventSchema = new mongoose.Schema({
     createdAt: {
       type: Date,
       default: Date.now
+    },
+    status: {
+      type: String,
+      enum: ['approved','pending', 'declined'],
+      default: 'pending'
     }
 });
 const Event = mongoose.model('Event', eventSchema);
