@@ -30,4 +30,4 @@ router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), upda
 // Delete user (Admin only)
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
 
-module.exports = router;
+module.exports = router; 

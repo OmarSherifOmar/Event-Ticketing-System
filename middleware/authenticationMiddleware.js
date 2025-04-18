@@ -7,7 +7,7 @@ module.exports = function authenticationMiddleware(req, res, next) {
   // Check for token in cookies
   const cookie = req.cookies;
   let token = cookie?.token;
-
+  
   // If no token in cookies, check the Authorization header
   if (!token) {
     const authHeader = req.headers.authorization;
