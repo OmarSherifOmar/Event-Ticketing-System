@@ -24,7 +24,7 @@ getEvent:async(req,res)=>{
 
 getUserEvent: async(req,res)=>{
     try{
-        const events = await eventsmodel.find({organiser: req.user.id});
+        const events = await eventsmodel.find({organizer: req.user.id});
         if(!events || events.length === 0){
             return res.status(404).json({message: "No events found"})
         }

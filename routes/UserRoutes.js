@@ -30,4 +30,8 @@ router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), upda
 // Delete user (Admin only)
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
 
+router.get("/analytics", authenticate, authorizationMiddleware(["Organizer"]), EventController.getAnalytics);
+
+router.get("/events", authenticate, authorizationMiddleware(["Organizer"]), EventController.getUserEvent);
+
 module.exports = router;
