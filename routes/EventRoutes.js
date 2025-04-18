@@ -21,9 +21,8 @@ router.put("/:id", authenticate, authorizationMiddleware(["Organizer", "System A
 router.delete("/:id", authenticate, authorizationMiddleware(["Organizer", "System Admin"]), EventController.DeleteEvent);
 
 // Get events for the current user (Organizer only)
-router.get("/users", authenticate, authorizationMiddleware(["Organizer"]), EventController.getUserEvent);
+
 
 // Get analytics for events (Organizer only)
-router.get("/users/analytics", authenticate, authorizationMiddleware(["Organizer"]), EventController.getAnalytics);
 
 module.exports = router;

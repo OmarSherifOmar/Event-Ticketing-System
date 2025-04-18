@@ -2,7 +2,7 @@ const express = require("express");
 const { deleteUser, getAllUsers, updateUserRole, getUserById, getCurrentUserProfile } = require("../controlers/UserController");
 const authenticate = require("../middleware/authentication");
 const authorizationMiddleware = require("../middleware/authorization"); // Import authorizationMiddleware
-
+const EventController = require("../controlers/EventController");
 const router = express.Router();
 
 // * Get current user's profile (Authenticated Users)
@@ -19,5 +19,9 @@ router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), upda
 
 // * Delete user route (System Admin only)
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
+
+router.get("/analytics", authenticate, authorizationMiddleware(["Organizer"]), EventController.getAnalytics);
+
+router.get("/events", authenticate, authorizationMiddleware(["Organizer"]), EventController.getUserEvent);
 
 module.exports = router;
