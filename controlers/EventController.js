@@ -45,8 +45,7 @@ getUserEvent: async(req,res)=>{
     }
 },
 PostEvent: async (req, res) => {
-    const organizerId = req.body.organizer?.id || req.body.organizer; // Handle both formats
-
+    const organizerId = req.body.organizer?.id || req.body.organizer; 
     const Event1 = new eventsmodel({
         title: req.body.title,
         description: req.body.description,
@@ -57,7 +56,7 @@ PostEvent: async (req, res) => {
         ticketPricing: req.body.ticketPricing,
         totalTickets: req.body.totalTickets,
         remainingTickets: req.body.remainingTickets,
-        organizer: organizerId, // Use the extracted organizer ID
+        organizer: organizerId, 
         createdAt: req.body.createdAt,
         status: req.body.status,
     });
@@ -87,26 +86,24 @@ DeleteEvent: async(req,res)=>{
         return res.status(500),json({message :error.message})
     }
 },
-    getAnalytics: async (req, res) => {
+getAnalytics: async (req, res) => {
     try {
-        // Fetch events created by the current organizer
         const events = await eventsmodel.find({ organizer: req.user.id });
         
         if (!events || events.length === 0) {
             return res.status(404).json({ message: "No events found for this organizer." });
         }
 
-        // Map through the events and calculate analytics data
         const analyticsData = events.map(event => ({
             title: event.title,
             bookedPercentage: event.totalTickets > 0
                 ? ((event.totalTickets - event.remainingTickets) / event.totalTickets) * 100
-                : 0, // Avoid division by zero
+                : 0,
         }));
 
         return res.status(200).json(analyticsData);
     } catch (error) {
-        console.error("Error in getAnalytics:", error.message); // Log the error for debugging
+        console.error("Error in getAnalytics:", error.message);
         return res.status(500).json({ message: error.message });
     }
 },

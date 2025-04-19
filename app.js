@@ -6,31 +6,25 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-// Debugging environment variables
 console.log("DB_URL:", process.env.DB_URL);
 console.log("PORT:", process.env.PORT || 5000);
 console.log("ORIGIN:", process.env.ORIGIN);
 
-// Middleware setup
 app.use(express.json());
 app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(cookieParser());
 
-// Routes
+
 try { 
-    // Auth routes
     const authRoutes = require('./routes/authRoute.js');
     app.use('/api/v1', authRoutes);
 
-    // Booking routes
     const bookingRoutes = require('./routes/bookingRoutes.js');
     app.use('/api/v1/bookings', bookingRoutes);
 
-    // User routes
     const userRoutes = require('./routes/UserRoutes');
     app.use('/api/v1/users', userRoutes);
 
-    // Event routes
     const eventRoutes = require('./routes/EventRoutes');
     app.use('/api/v1/events', eventRoutes);
 

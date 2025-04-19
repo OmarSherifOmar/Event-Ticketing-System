@@ -1,4 +1,3 @@
-// filepath: c:\Users\Karim\Desktop\Event-Ticketing-System-2\models\User.js
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
