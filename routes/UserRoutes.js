@@ -1,23 +1,39 @@
 const express = require("express");
-const { deleteUser, getAllUsers, updateUserRole, getUserById, getCurrentUserProfile } = require("../controlers/UserController");
-const authenticate = require("../middleware/authentication");
-const authorizationMiddleware = require("../middleware/authorization"); // Import authorizationMiddleware
-
+const { 
+    deleteUser, 
+    getAllUsers, 
+    updateUserRole, 
+    getUserById, 
+    getCurrentUserProfile, 
+    updateProfile,
+    forgetPassword,
+    resetPassword
+} = require("../controlers/UserController");
+const authenticate = require("../middleware/authenticationMiddleware");
+const authorizationMiddleware = require("../middleware/authorizationMiddleware"); // Import authorizationMiddleware
+const UserController = require("../controlers/UserController");
 const router = express.Router();
 
-// * Get current user's profile (Authenticated Users)
+// Get current user's profile (Authenticated Users)
 router.get('/profile', authenticate, getCurrentUserProfile);
 
-// * Get all users route (System Admin only)
+// Update current user's profile (Authenticated Users)
+router.put('/profile', authenticate, updateProfile);
+
+// Get all users (Admin only)
 router.get('/', authenticate, authorizationMiddleware(['System Admin']), getAllUsers);
 
-// * Get a single user by ID (System Admin only)
+// Get a single user by ID (Admin only)
 router.get('/:id', authenticate, authorizationMiddleware(['System Admin']), getUserById);
 
-// * Update user's role route (System Admin only)
+// Update user's role (Admin only)
 router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), updateUserRole);
 
-// * Delete user route (System Admin only)
+// Delete user (Admin only)
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
 
+// Forgot Password (keeps as POST since it's 
+router.post('/forgetPassword',UserController.forgetPassword);
+router.post('/resetPassword', UserController.resetPassword);
+// * Get current user's profile (Authenticated Users)
 module.exports = router;
