@@ -11,6 +11,7 @@ const {
 } = require("../controlers/UserController"); // Import user-related methods
 const { getAnalytics, getUserEvent } = require("../controlers/EventController"); // Import analytics and user event methods
 const authenticate = require("../middleware/authenticationMiddleware");
+const booking = require("../controlers/bookingController"); // Import booking controller
 const authorizationMiddleware = require("../middleware/authorizationMiddleware");
 
 const router = express.Router();
@@ -20,6 +21,8 @@ router.get("/events/analytics", authenticate, authorizationMiddleware(["Organize
 
 // Get current user's events (Organizer only)
 router.get("/events", authenticate, authorizationMiddleware(["Organizer"]), getUserEvent);
+
+router.get("/bookings", authenticate, authorizationMiddleware(['Standard User']), booking.getMyBookings);
 
 // Get current user's profile (Authenticated Users)
 router.get('/profile', authenticate, getCurrentUserProfile);

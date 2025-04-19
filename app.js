@@ -22,6 +22,10 @@ try {
     const authRoutes = require('./routes/authRoute.js');
     app.use('/api/v1', authRoutes);
 
+    // Booking routes
+    const bookingRoutes = require('./routes/bookingRoutes.js');
+    app.use('/api/v1/bookings', bookingRoutes);
+
     // User routes
     const userRoutes = require('./routes/UserRoutes');
     app.use('/api/v1/users', userRoutes);
