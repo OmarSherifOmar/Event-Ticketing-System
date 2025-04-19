@@ -5,9 +5,10 @@ const authorizationMiddleware = require("../middleware/authorizationMiddleware")
 
 const router = express.Router();
 
-// Get all events (Accessible to all roles)
-router.get("/", authenticate, authorizationMiddleware(["Organizer", "Standard User", "System Admin"]), EventController.getALLEvents);
-
+// Get all approved events (Accessible to all roles)
+router.get("/", authenticate, authorizationMiddleware(["Organizer", "Standard User", "System Admin"]), EventController.getALLApprovedEvents);
+// Get all events (Accessible to admin)
+router.get("/all", authenticate, authorizationMiddleware(["System Admin"]), EventController.getALLEvents);
 // Create a new event (Organizer only)
 router.post("/", authenticate, authorizationMiddleware(["Organizer"]), EventController.PostEvent);
 
