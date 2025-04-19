@@ -1,18 +1,25 @@
 const express = require("express");
-const { 
-    deleteUser, 
-    getAllUsers, 
-    updateUserRole, 
-    getUserById, 
-    getCurrentUserProfile, 
-    updateProfile,
+const {
+    getCurrentUserProfile,
+    getAllUsers,
+    getUserById,
+    updateUserRole,
+    deleteUser,
     forgetPassword,
-    resetPassword
-} = require("../controlers/UserController");
+    resetPassword,
+    updateProfile,
+} = require("../controlers/UserController"); // Import user-related methods
+const { getAnalytics, getUserEvent } = require("../controlers/EventController"); // Import analytics and user event methods
 const authenticate = require("../middleware/authenticationMiddleware");
-const authorizationMiddleware = require("../middleware/authorizationMiddleware"); // Import authorizationMiddleware
-const UserController = require("../controlers/UserController");
+const authorizationMiddleware = require("../middleware/authorizationMiddleware");
+
 const router = express.Router();
+
+// Get analytics for events (Organizer only)
+router.get("/events/analytics", authenticate, authorizationMiddleware(["Organizer"]), getAnalytics);
+
+// Get current user's events (Organizer only)
+router.get("/events", authenticate, authorizationMiddleware(["Organizer"]), getUserEvent);
 
 // Get current user's profile (Authenticated Users)
 router.get('/profile', authenticate, getCurrentUserProfile);
@@ -20,20 +27,22 @@ router.get('/profile', authenticate, getCurrentUserProfile);
 // Update current user's profile (Authenticated Users)
 router.put('/profile', authenticate, updateProfile);
 
-// Get all users (Admin only)
+// Get all users (System Admin only)
 router.get('/', authenticate, authorizationMiddleware(['System Admin']), getAllUsers);
 
-// Get a single user by ID (Admin only)
+// Get a single user by ID (System Admin only)
 router.get('/:id', authenticate, authorizationMiddleware(['System Admin']), getUserById);
 
-// Update user's role (Admin only)
+// Update user's role (System Admin only)
 router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), updateUserRole);
 
-// Delete user (Admin only)
+// Delete a user (System Admin only)
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
 
-// Forgot Password (keeps as POST since it's 
-router.post('/forgetPassword',UserController.forgetPassword);
-router.post('/resetPassword', UserController.resetPassword);
-// * Get current user's profile (Authenticated Users)
+// Forgot password (Public)
+router.post('/forgotpassword', forgetPassword);
+
+// Reset password (Public)
+router.put('/resetpassword', resetPassword);
+
 module.exports = router;
