@@ -1,7 +1,7 @@
 const express = require("express");
-const EventController = require("../controlers/EventController");
-const authenticate = require("../middleware/authenticationMiddleware"); 
-const authorizationMiddleware = require("../middleware/authorizationMiddleware"); 
+const EventController = require("../controlers/EventController"); // Ensure the path is correct
+const authenticate = require("../middleware/authenticationMiddleware");
+const authorizationMiddleware = require("../middleware/authorizationMiddleware");
 
 const router = express.Router();
 
@@ -20,9 +20,5 @@ router.put("/:id", authenticate, authorizationMiddleware(["Organizer", "System A
 // Delete an event (Organizer and System Admin only)
 router.delete("/:id", authenticate, authorizationMiddleware(["Organizer", "System Admin"]), EventController.DeleteEvent);
 
-// Get events for the current user (Organizer only)
-
-
-// Get analytics for events (Organizer only)
 
 module.exports = router;

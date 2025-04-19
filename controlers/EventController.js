@@ -7,7 +7,7 @@ getALLEvents : async (req, res) => {
     const events = await eventsmodel.find();
     return res.status(200).json(events)
 }
-    catch(e){
+    catch(e){ 
         return res.status(500).json({message:e.message})
     }
   
@@ -79,17 +79,24 @@ DeleteEvent: async(req,res)=>{
 },
 getAnalytics: async (req, res) => {
     try {
+        // Fetch events created by the current organizer
         const events = await eventsmodel.find({ organizer: req.user.id });
-        if (!events) {
+        
+        if (!events || events.length === 0) {
             return res.status(404).json({ message: "No events found for this organizer." });
         }
+
+        // Map through the events and calculate analytics data
         const analyticsData = events.map(event => ({
             title: event.title,
-            bookedPercentage: (event.ticketsBooked / event.numberOfTickets) * 100
+            bookedPercentage: event.totalTickets > 0
+                ? ((event.totalTickets - event.remainingTickets) / event.totalTickets) * 100
+                : 0, // Avoid division by zero
         }));
 
         return res.status(200).json(analyticsData);
     } catch (error) {
+        console.error("Error in getAnalytics:", error.message); // Log the error for debugging
         return res.status(500).json({ message: error.message });
     }
 },
