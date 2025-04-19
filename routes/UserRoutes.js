@@ -5,11 +5,13 @@ const {
     updateUserRole, 
     getUserById, 
     getCurrentUserProfile, 
-    updateProfile 
+    updateProfile,
+    forgetPassword,
+    resetPassword
 } = require("../controlers/UserController");
 const authenticate = require("../middleware/authenticationMiddleware");
 const authorizationMiddleware = require("../middleware/authorizationMiddleware"); // Import authorizationMiddleware
-
+const UserController = require("../controlers/UserController");
 const router = express.Router();
 
 // Get current user's profile (Authenticated Users)
@@ -30,4 +32,8 @@ router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), upda
 // Delete user (Admin only)
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
 
-module.exports = router; 
+// Forgot Password (keeps as POST since it's 
+router.post('/forgetPassword',UserController.forgetPassword);
+router.post('/resetPassword', UserController.resetPassword);
+// * Get current user's profile (Authenticated Users)
+module.exports = router;
