@@ -1,11 +1,12 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose"); 
 const jwt = require("jsonwebtoken");
 
 
 const JWT_SECRET = "your_jwt_secret_key"; // Replace with a secure key
 
-
+ 
 exports.register = async (req, res) => {
     try {
         console.log("Request body:", req.body); // Debugging log

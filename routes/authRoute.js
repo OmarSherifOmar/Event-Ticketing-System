@@ -14,4 +14,4 @@ router.put("/forgetPassword", forgetPassword);
 // * Delete user route (Optional, commented out)
 // router.delete('/users/:id', deleteUser);
 
-module.exports = router; // Export the router
+module.exports = router; // Export the router 

@@ -17,7 +17,7 @@ app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(cookieParser());
 
 // Routes
-try {
+try { 
     // Auth routes
     const authRoutes = require('./routes/authRoute.js');
     app.use('/api/v1', authRoutes);

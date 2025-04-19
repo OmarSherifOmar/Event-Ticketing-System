@@ -7,7 +7,7 @@ getALLEvents : async (req, res) => {
     const events = await eventsmodel.find();
     return res.status(200).json(events)
 }
-    catch(e){
+    catch(e){ 
         return res.status(500).json({message:e.message})
     }
   
