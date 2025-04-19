@@ -2,6 +2,16 @@
 const eventsmodel = require('../models/Event')
 
 const EventController={
+getALLApprovedEvents : async (req, res) => {
+    try{
+    const events = await eventsmodel.find({status:"approved"});
+    return res.status(200).json(events)
+}
+    catch(e){ 
+        return res.status(500).json({message:e.message})
+    }
+  
+},
 getALLEvents : async (req, res) => {
     try{
     const events = await eventsmodel.find();
@@ -77,7 +87,7 @@ DeleteEvent: async(req,res)=>{
         return res.status(500),json({message :error.message})
     }
 },
-getAnalytics: async (req, res) => {
+    getAnalytics: async (req, res) => {
     try {
         // Fetch events created by the current organizer
         const events = await eventsmodel.find({ organizer: req.user.id });
