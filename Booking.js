@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// 
+// Define the Booking schema
 const bookingSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -13,22 +13,14 @@ const bookingSchema = new Schema({
     ref: 'Event',
     required: true
   },
-  numberOfTickets: {
-    type: Number,
-    required: true 
-  },
-  BookedAt: {
+  bookingDate: {
     type: Date,
     default: Date.now
   },
-bookingStatus:{
-  type:String,
-  enum: ['Canceled', 'Confirmed', 'Pending'],
-  default: 'Pending'
-},
-totalPrice: {
-  type: Number, 
-  required: true
-}
-
+  numberOfTickets: {
+    type: Number,
+    required: true
+  }
 });
+const Booking = mongoose.model('Booking', bookingSchema);
+module.exports = Booking;

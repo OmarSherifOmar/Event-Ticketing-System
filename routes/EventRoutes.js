@@ -1,13 +1,24 @@
 const express = require("express");
-const EventController =require("../controlers/EventController");
-const authorizationMiddleware=require('../middleware/authorizationMiddleware');
+const EventController = require("../controlers/EventController"); // Ensure the path is correct
+const authenticate = require("../middleware/authenticationMiddleware");
+const authorizationMiddleware = require("../middleware/authorizationMiddleware");
+
 const router = express.Router();
 
-router.get("/events",authorizationMiddleware(["Organizer","Standard User","System Admin"]),EventController.getALLEvents);
-router.post("/events",authorizationMiddleware(["Organizer"]),EventController.PostEvent);
-router.get("/events/:id",authorizationMiddleware(["Organizer","Standard User","System Admin"]),EventController.getEvent);
-router.put("/events/:id",authorizationMiddleware(["Organizer","System Admin"]),EventController.EditEvent);
-router.delete("/events/:id",authorizationMiddleware(["Organizer","System Admin"]),EventController.DeleteEvent);
-router.get("/users/events", authorizationMiddleware(["Organizer"]), EventController.getUserEvents);
-router.get("/users/events/analytics", authorizationMiddleware(["Organizer"]), EventController.getAnalytics);
-module.exports=router ;
+// Get all events (Accessible to all roles)
+router.get("/", authenticate, authorizationMiddleware(["Organizer", "Standard User", "System Admin"]), EventController.getALLEvents);
+
+// Create a new event (Organizer only)
+router.post("/", authenticate, authorizationMiddleware(["Organizer"]), EventController.PostEvent);
+
+// Get a single event by ID (Accessible to all roles)
+router.get("/:id", authenticate, authorizationMiddleware(["Organizer", "Standard User", "System Admin"]), EventController.getEvent);
+
+// Edit an event (Organizer and System Admin only)
+router.put("/:id", authenticate, authorizationMiddleware(["Organizer", "System Admin"]), EventController.EditEvent);
+
+// Delete an event (Organizer and System Admin only)
+router.delete("/:id", authenticate, authorizationMiddleware(["Organizer", "System Admin"]), EventController.DeleteEvent);
+
+
+module.exports = router;

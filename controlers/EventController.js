@@ -1,5 +1,5 @@
 
-const eventsmodel = require('..\models\Event.js')
+const eventsmodel = require('../models/Event')
 
 const EventController={
 getALLEvents : async (req, res) => {
@@ -7,7 +7,7 @@ getALLEvents : async (req, res) => {
     const events = await eventsmodel.find();
     return res.status(200).json(events)
 }
-    catch(e){
+    catch(e){ 
         return res.status(500).json({message:e.message})
     }
   
@@ -24,7 +24,7 @@ getEvent:async(req,res)=>{
 
 getUserEvent: async(req,res)=>{
     try{
-        const events = await eventsmodel.find({organiser: req.user.id});
+        const events = await eventsmodel.find({organizer: req.user.id});
         if(!events || events.length === 0){
             return res.status(404).json({message: "No events found"})
         }
@@ -34,30 +34,31 @@ getUserEvent: async(req,res)=>{
         return res.status(500).json({message: e.message})
     }
 },
-PostEvent: async(req,res)=>{
-   
-        const Event1 =new eventsmodel({
-            title: req.body.title,
-            description: req.body.description,
-            date: req.body.date,
-            location: req.body.location,
-            category: req.body.category,
-            image: req.body.image,
-            ticketPricing: req.body.ticketPricing,
-            totalTickets: req.body.totalTickets,
-            remainingTickets: req.body.remainingTickets,
-            organizer: req.body.organizer,
-            createdAt: req.body.createdAt,
-            status:req.body.status,
-        })
-        try{
-            const newEvent=await Event1.save();
-            return res.status(201).json(newEvent);
-        }
-        catch(e){
-            return res.status(500).json({message: e.message})
-        }
-    },
+PostEvent: async (req, res) => {
+    const organizerId = req.body.organizer?.id || req.body.organizer; // Handle both formats
+
+    const Event1 = new eventsmodel({
+        title: req.body.title,
+        description: req.body.description,
+        date: req.body.date,
+        location: req.body.location,
+        category: req.body.category,
+        image: req.body.image,
+        ticketPricing: req.body.ticketPricing,
+        totalTickets: req.body.totalTickets,
+        remainingTickets: req.body.remainingTickets,
+        organizer: organizerId, // Use the extracted organizer ID
+        createdAt: req.body.createdAt,
+        status: req.body.status,
+    });
+
+    try {
+        const newEvent = await Event1.save();
+        return res.status(201).json(newEvent);
+    } catch (e) {
+        return res.status(500).json({ message: e.message });
+    }
+},
 EditEvent: async(req,res)=>{
     try{
         const Event1=await eventsmodel.findByIdAndUpdate(req.params.id,req.body);
@@ -78,17 +79,24 @@ DeleteEvent: async(req,res)=>{
 },
 getAnalytics: async (req, res) => {
     try {
+        // Fetch events created by the current organizer
         const events = await eventsmodel.find({ organizer: req.user.id });
-        if (!events) {
+        
+        if (!events || events.length === 0) {
             return res.status(404).json({ message: "No events found for this organizer." });
         }
+
+        // Map through the events and calculate analytics data
         const analyticsData = events.map(event => ({
             title: event.title,
-            bookedPercentage: (event.ticketsBooked / event.numberOfTickets) * 100
+            bookedPercentage: event.totalTickets > 0
+                ? ((event.totalTickets - event.remainingTickets) / event.totalTickets) * 100
+                : 0, // Avoid division by zero
         }));
 
         return res.status(200).json(analyticsData);
     } catch (error) {
+        console.error("Error in getAnalytics:", error.message); // Log the error for debugging
         return res.status(500).json({ message: error.message });
     }
 },
@@ -115,3 +123,6 @@ statusEvent: async (req, res) => {
 }
 
 }
+module.exports = EventController;
+
+
