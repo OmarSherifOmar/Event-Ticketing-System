@@ -34,8 +34,4 @@ router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), upda
 
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
 
-router.post('/forgotpassword', forgetPassword);
-
-router.put('/resetpassword', resetPassword);
-
 module.exports = router;
