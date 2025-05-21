@@ -11,13 +11,19 @@ console.log("PORT:", process.env.PORT || 5000);
 console.log("ORIGIN:", process.env.ORIGIN);
 
 app.use(express.json());
-app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(cookieParser());
+app.use(cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+    credentials: true
+}));
 
+// Serve uploads folder as static
+app.use('/uploads', express.static('uploads'));
 
 try { 
-    const authRoutes = require('./routes/authRoute.js');
-    app.use('/api/v1', authRoutes);
+  
+    const authRoute = require('./routes/authRoute');
+    app.use('/api/v1/auth', authRoute);
 
     const bookingRoutes = require('./routes/bookingRoutes.js');
     app.use('/api/v1/bookings', bookingRoutes);
@@ -35,13 +41,12 @@ try {
 }
 
 // Connect to MongoDB Atlas
-mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DB_URL, { useNewUrlParser: true })
     .then(() => console.log("Connected to MongoDB Atlas"))
     .catch((err) => {
         console.error("DB connection error:", err.message);
         process.exit(1);
     });
-
 
 // Start the server
 const PORT = process.env.PORT || 5000;
