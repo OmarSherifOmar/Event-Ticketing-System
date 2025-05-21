@@ -1,9 +1,9 @@
 import "./styles/NavBar.css"
-import { Link } from "react-router-dom";  // Add this import
-function NavBar(){
- return(
-<div className="main-home">
-      {/* Navigation Bar */}
+import { Link, useLocation } from "react-router-dom";
+function NavBar() {
+  const location = useLocation();
+  return (
+    <div className="navmain">
       <nav className="navbar">
         <div className="navbar-logo">
           <Link to="/" className="navbar-brand">Event Ticketing</Link>
@@ -20,8 +20,7 @@ function NavBar(){
           </li>
         </ul>
       </nav>
-      </div>
- );
-
+    </div>
+  );
 }
 export default NavBar;  
