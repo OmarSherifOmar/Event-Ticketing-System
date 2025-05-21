@@ -1,0 +1,52 @@
+.button {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #a777e3, #6e8efb);
+}
+
+.forgot-link-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1rem;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.forgot-link-btn:hover {
+  color: #0056b3;
+}
+
+.cancel-btn {
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #a777e3;
+  color: #fff;
+}

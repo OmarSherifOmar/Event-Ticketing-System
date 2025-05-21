@@ -1,0 +1,16 @@
+.text-field {
+  padding: 1rem;
+  border: 1px solid #444;
+  border-radius: 0.7rem;
+  font-size: 1.1rem;
+  background: #191919;
+  color: #fff;
+  transition: border 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.text-field:focus {
+  border: 1.5px solid #a777e3;
+  outline: none;
+}
