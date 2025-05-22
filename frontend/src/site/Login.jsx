@@ -71,7 +71,7 @@ export default function Login() {
       const response = await axios.post(`${API_URL}/auth/login`, form, { withCredentials: true });
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setMessage("Login successful!");
-      setTimeout(() => navigate("/profile"), 1000);
+      setTimeout(() => navigate("/"), 1000);
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed.");
     }
