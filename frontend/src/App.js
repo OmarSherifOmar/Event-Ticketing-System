@@ -7,6 +7,7 @@ import Profile from "./Profile";
 import { ThemeProvider } from "./ThemeContext"; // <-- import ThemeProvider
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
+import EventDetails from "./components/EventView/EventDetails.jsx";
 function App() {
   return (
     <ThemeProvider>
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<><NavBar />,<Profile />,<Footer/></>} />
+          <Route path="/events/:id" element={<><NavBar />,<EventDetails />,<Footer/></>} />
         </Routes>
       </Router>
     </ThemeProvider>
