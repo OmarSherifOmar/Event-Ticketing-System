@@ -6,7 +6,7 @@ const authorizationMiddleware = require("../middleware/authorizationMiddleware")
 const router = express.Router();
 
 
-router.get("/", authenticate, authorizationMiddleware(["Organizer", "Standard User", "System Admin"]), EventController.getALLApprovedEvents);
+router.get("/", EventController.getALLApprovedEvents);
 
 router.get("/all", authenticate, authorizationMiddleware(["System Admin"]), EventController.getALLEvents);
 
