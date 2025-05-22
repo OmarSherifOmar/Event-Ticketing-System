@@ -60,6 +60,7 @@
   try {
     await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true }); // <-- add /auth
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/");
   } catch {
     setMessage("Logout failed.");
