@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import TextField from "../components/LoginTextfield.jsx";
 import Button from "../components/Button01.jsx";
 import "../sitestyle/Auth.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = "http://localhost:5000/api/v1";
 
-function LoginForm({ form, onChange, onSubmit, onForgot, message }) {
+function LoginForm({ form, onChange, onSubmit, onForgot }) {
   return (
     <form className="auth-form" onSubmit={onSubmit}>
       <h2>Login</h2>
@@ -19,25 +21,22 @@ function LoginForm({ form, onChange, onSubmit, onForgot, message }) {
           Forgot Password?
         </Button>
       </div>
-      {message && <div className="message">{message}</div>}
     </form>
   );
 }
 
-function ForgotForm({ email, onChange, onSubmit, onCancel, message }) {
+function ForgotForm({ email, onChange, onSubmit, onCancel }) {
   return (
     <form className="auth-form" onSubmit={onSubmit}>
       <h3>Forgot Password</h3>
       <TextField type="email" name="forgotEmail" placeholder="Enter your email" value={email} onChange={onChange} required />
       <Button type="submit">Send OTP</Button>
       <Button type="button" className="cancel-btn" onClick={onCancel}>Cancel</Button>
-      {message && <div className="message">{message}</div>}
     </form>
   );
 }
 
-// --- ResetForm component defined here ---
-function ResetForm({ form, onChange, onSubmit, onCancel, message }) {
+function ResetForm({ form, onChange, onSubmit, onCancel }) {
   return (
     <form className="auth-form" onSubmit={onSubmit}>
       <h3>Reset Password</h3>
@@ -45,20 +44,16 @@ function ResetForm({ form, onChange, onSubmit, onCancel, message }) {
       <TextField type="password" name="newPassword" placeholder="New Password" value={form.newPassword} onChange={onChange} required />
       <Button type="submit">Reset Password</Button>
       <Button type="button" className="cancel-btn" onClick={onCancel}>Cancel</Button>
-      {message && <div className="message">{message}</div>}
     </form>
   );
 }
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
-  const [message, setMessage] = useState("");
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
-  const [forgotMsg, setForgotMsg] = useState("");
   const [showReset, setShowReset] = useState(false);
   const [resetForm, setResetForm] = useState({ email: "", otp: "", newPassword: "" });
-  const [resetMsg, setResetMsg] = useState("");
   const navigate = useNavigate();
 
   // Handlers
@@ -66,63 +61,59 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage("");
     try {
       const response = await axios.post(`${API_URL}/auth/login`, form, { withCredentials: true });
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      setMessage("Login successful!");
+      toast.success("Login successful!");
       setTimeout(() => navigate("/profile"), 1000);
     } catch (err) {
-      setMessage(err.response?.data?.message || "Login failed.");
+      toast.error(err.response?.data?.message || "Login failed.");
     }
   };
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
-    setForgotMsg("");
     try {
       await axios.put(`${API_URL}/auth/forgetPassword`, { email: forgotEmail });
-      setForgotMsg("OTP sent to your email.");
+      toast.success("OTP sent to your email.");
       setShowReset(true);
       setResetForm({ ...resetForm, email: forgotEmail });
     } catch (err) {
-      setForgotMsg(err.response?.data?.message || "Error sending OTP.");
+      toast.error(err.response?.data?.message || "Error sending OTP.");
     }
   };
 
-  // Handler for ResetForm input changes
   const handleResetChange = (e) => {
     setResetForm({ ...resetForm, [e.target.name]: e.target.value });
   };
 
   const handleResetSubmit = async (e) => {
     e.preventDefault();
-    setResetMsg("");
     try {
       await axios.put(`${API_URL}/auth/resetpassword`, {
         email: resetForm.email,
         token: resetForm.otp, // Change to otp: resetForm.otp if your backend expects 'otp'
         newPassword: resetForm.newPassword,
       });
-      setResetMsg("Password reset successful! You can now log in.");
+      toast.success("Password reset successful! You can now log in.");
       setShowForgot(false);
       setShowReset(false);
       setForgotEmail("");
       setResetForm({ email: "", otp: "", newPassword: "" });
     } catch (err) {
-      setResetMsg(err.response?.data?.message || "Error resetting password.");
+      toast.error(err.response?.data?.message || "Error resetting password.");
     }
   };
 
   return (
     <div className="main-home">
+      <ToastContainer />
       {!showForgot && (
         <LoginForm
           form={form}
           onChange={handleChange}
           onSubmit={handleLogin}
           onForgot={() => setShowForgot(true)}
-          message={message}
         />
       )}
       {showForgot && !showReset && (
@@ -132,10 +123,8 @@ export default function Login() {
           onSubmit={handleForgotSubmit}
           onCancel={() => {
             setShowForgot(false);
-            setForgotMsg("");
             setForgotEmail("");
           }}
-          message={forgotMsg}
         />
       )}
       {showForgot && showReset && (
@@ -146,12 +135,9 @@ export default function Login() {
           onCancel={() => {
             setShowForgot(false);
             setShowReset(false);
-            setForgotMsg("");
-            setResetMsg("");
             setForgotEmail("");
             setResetForm({ email: "", otp: "", newPassword: "" });
           }}
-          message={resetMsg}
         />
       )}
     </div>
