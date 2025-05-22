@@ -46,3 +46,14 @@
   font-size: 1rem;
   font-weight: 500;
 }
+
+.eventlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  justify-items: center;
+  align-items: stretch;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding-bottom: 40px;
+}
