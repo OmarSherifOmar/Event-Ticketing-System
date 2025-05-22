@@ -9,8 +9,18 @@ const JWT_SECRET = "your_jwt_secret_key";
  
 exports.register = async (req, res) => {
     try {
+        // For debugging: log body and file
         console.log("Request body:", req.body); 
-        const { name, email, password, role, profilepicture } = req.body;
+        console.log("Uploaded file:", req.file);
+
+        const { name, email, password, role } = req.body;
+        // Get the uploaded file path (if file was uploaded)
+        const profilepicture = req.file ? req.file.path : null;
+
+        // Validate required fields
+        if (!name || !email || !password ) {
+            return res.status(400).json({ message: "All fields are required." });
+        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -60,10 +70,29 @@ exports.login = async (req, res) => {
             maxAge: 3600000, //(1 hour)
         });
 
-        res.status(200).json({ message: "Login successful", token });
+        // Send user info along with token
+        res.status(200).json({
+            message: "Login successful",
+            token,
+            user: {
+                name: user.name,
+                role: user.role,
+                profilepicture: user.profilepicture,
+                email: user.email
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
+};
+
+exports.logout = (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
+    });
+    res.status(200).json({ message: "Logged out successfully" });
 };
 
 // Update user profile
@@ -83,7 +112,33 @@ exports.updateProfile = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 };
+exports.updateProfilePicture = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "Unauthorized: user not found in request" });
+        }
+        const userId = req.user.id;
+        const profilepicture = req.file ? req.file.path : null;
 
+        if (!profilepicture) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { profilepicture },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ profilepicture: updatedUser.profilepicture });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
 exports.deleteUser = async (req, res) => {
     console.log("Delete user request received for ID:", req.params.id);
     try {

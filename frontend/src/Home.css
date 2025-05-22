@@ -1,0 +1,119 @@
+/* EventList Container */
+.eventlist-container {
+  width: 100%;
+  padding: 2rem 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Title Styling */
+.eventlist-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2.5rem;
+  position: relative;
+  letter-spacing: 1px;
+}
+
+.eventlist-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #a777e3, #6e8efb);
+  margin: 0.8rem auto 0;
+  border-radius: 2px;
+}
+
+/* Grid Layout */
+.eventlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+/* Individual Event Cards (keep your existing .event-card styles) */
+.event-card {
+  background: #2d2d2d;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #3a3a3a;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border-color: #a777e3;
+}
+
+.event-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background: #3a3a3a; /* Fallback if image missing */
+}
+
+.event-info {
+  padding: 1.5rem;
+}
+
+.event-info h3 {
+  color: #fff;
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.event-date,
+.event-location,
+.event-price {
+  color: #b0b0b0;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.event-price {
+  color: #a777e3;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Button Styling */
+.event-btn {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: 0.8rem 1.8rem;
+  background: linear-gradient(90deg, #a777e3, #6e8efb);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.event-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(167, 119, 227, 0.4);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .eventlist-grid {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+  
+  .eventlist-title {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,95 @@
+/* Global box-sizing fix */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll */
+body, .main-home {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  color: #f3f3f3;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100vw;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+  width: 100%;
+  background: #232526;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 3rem;
+  box-shadow: 0 4px 24px rgba(110, 142, 251, 0.13);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid #292b2f;
+}
+
+/* Theme toggle button styles */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  margin-right: 1.5rem;
+  cursor: pointer;
+  color: #a777e3;
+  transition: color 0.2s;
+  outline: none;
+  align-self: center;
+}
+.theme-toggle-btn:hover {
+  color: #fff;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo .navbar-brand {
+  color: #a777e3;
+  font-size: 2rem;
+  font-weight: bold;
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: color 0.2s;
+}
+
+.navbar-logo .navbar-brand:hover {
+  color: #fff;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  display: inline;
+}
+
+.navbar-links a {
+  color: #fff;
+  font-size: 1.1rem;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.3rem 1.2rem;
+  border-radius: 2rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-links a.active,
+.navbar-links a:hover {
+  background: #a777e3;
+  color: #232526;
+}
