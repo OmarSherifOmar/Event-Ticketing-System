@@ -4,6 +4,7 @@
   import { useNavigate } from "react-router-dom";
   import { FaCog } from "react-icons/fa";
   import "./Profile.css";
+  import "./BookingSection.css";
 
   const API_URL = "http://localhost:5000/api/v1";
 
@@ -60,6 +61,7 @@
   try {
     await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true }); // <-- add /auth
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/");
   } catch {
     setMessage("Logout failed.");
@@ -179,6 +181,15 @@
                 >
                   Edit Profile
                 </button>
+                                <button
+                  className="profile-settings-item"
+                  onClick={() => {
+                    setSettingsOpen(false);
+                    navigate("/bookings");
+                  }}
+                  >
+                  My Bookings
+                  </button>
                 <button
                   className="profile-settings-item logout"
                   onClick={() => {

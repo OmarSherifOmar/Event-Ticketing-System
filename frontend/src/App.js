@@ -8,6 +8,7 @@ import { ThemeProvider } from "./ThemeContext"; // <-- import ThemeProvider
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import EventDetails from "./components/EventView/EventDetails.jsx";
+import UserBookingsPage from "./UserBookingsPage";
 function App() {
   return (
     <ThemeProvider>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<><NavBar />,<Profile />,<Footer/></>} />
+          <Route path="/bookings" element={<><NavBar />,<UserBookingsPage />,<Footer/></>} />
           <Route path="/events/:id" element={<><NavBar />,<EventDetails />,<Footer/></>} />
         </Routes>
       </Router>

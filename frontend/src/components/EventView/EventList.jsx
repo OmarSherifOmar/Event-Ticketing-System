@@ -5,12 +5,10 @@ import "../styles/EventList.css";
 const API_URL = "http://localhost:5000/api/v1/events";
 function EventList(){
     const [events,setEvents] = useState([]);
-    let setLoading = true
     useEffect(()=>{
         fetch(API_URL, { credentials: "include"})
         .then(res=>res.json())
         .then(setEvents);},[]);
-    setLoading = false
     const handleView = (id) => window.location = `/events/${id}`;
     return (
     <div className="eventlist-container">

@@ -64,6 +64,7 @@ export default function Login() {
     try {
       const response = await axios.post(`${API_URL}/auth/login`, form, { withCredentials: true });
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("token", response.data.token);
       toast.success("Login successful!");
       setTimeout(() => navigate("/profile"), 1000);
     } catch (err) {
