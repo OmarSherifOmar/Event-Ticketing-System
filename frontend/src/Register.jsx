@@ -24,7 +24,7 @@ export default function Register() {
     try {
       await axios.post(`${API_URL}/auth/register`, form);
       setMessage("Registration successful!");
-      setTimeout(() => navigate("/"), 1000);
+      setTimeout(() => navigate("/login"), 1000);
     } catch (err) {
       setMessage(err.response?.data?.message || "An error occurred. Please try again.");
     }
