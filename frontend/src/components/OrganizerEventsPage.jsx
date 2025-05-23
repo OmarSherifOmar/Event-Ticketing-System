@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Removed unused useParams
 import axios from 'axios';
 import './styles/OrganizerEventsPage.css';
 import Button from './Button01.jsx';
+
 const OrganizerEventsPage = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingEvent, setEditingEvent] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,16 +31,15 @@ const OrganizerEventsPage = () => {
     fetchEvents();
   }, [navigate]);
 
-  
-  
-
   if (loading) return <div className="loading">Loading...</div>;
 
   return (
     <div className="organizer-events-container">
       <h2>Manage Your Events</h2>
-      <Button onClick={() => navigate('/create-event')}
-             className="create-event-btn">
+      <Button 
+        onClick={() => navigate('/create-event')}
+        className="create-event-btn"
+      >
         Create New Event
       </Button>
       
@@ -48,15 +47,15 @@ const OrganizerEventsPage = () => {
         {events.length > 0 ? (
           events.map(event => (
             <div key={event._id} className="event-card">
-              { (
-                <>
-                  <p><strong>Event Name: </strong> {event.title}</p>
-                  <p><strong>Date: </strong>{new Date(event.date).toLocaleString()}</p>
-                  <p><strong>Location: </strong>{event.location}</p>
-                   <Button onClick={() => navigate('/view-event')}
-                     className="view-event-btn">View More</Button>
-                </>
-              )}
+              <p><strong>Event Name: </strong> {event.title}</p>
+              <p><strong>Date: </strong>{new Date(event.date).toLocaleString()}</p>
+              <p><strong>Location: </strong>{event.location}</p>
+              <Button 
+                onClick={() => navigate(`/events/${event._id}`)} // Fixed this line
+                className="view-event-btn"
+              >
+                View More
+              </Button>
             </div>
           ))
         ) : (
@@ -65,6 +64,6 @@ const OrganizerEventsPage = () => {
       </div>
     </div>
   );
-
 };
+
 export default OrganizerEventsPage;

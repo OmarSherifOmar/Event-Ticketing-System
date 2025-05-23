@@ -9,8 +9,7 @@ import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import EventDetails from "./components/EventView/EventDetails.jsx";
 import OrganizerEventsPage from "./components/OrganizerEventsPage"; // Add this import
-import ViewEventPage from './components/ViewEventPage.jsx';
-
+import CreateEventPage from "./components/CreateEventPage.jsx";
 
 function App() {
   return (
@@ -23,7 +22,7 @@ function App() {
           <Route path="/profile" element={<><NavBar /><Profile /><Footer/></>} />
           <Route path="/events/:id" element={<><NavBar /><EventDetails /><Footer/></>} />
           <Route path="/organizer-events" element={<><NavBar /><OrganizerEventsPage /><Footer/></>} />
-          <Route path="/view-event" element={<><NavBar /><ViewEventPage /><Footer/></>} />
+          <Route path="/create-event" element={<><NavBar /><CreateEventPage /><Footer/></>} />
         </Routes>
       </Router>
     </ThemeProvider>
