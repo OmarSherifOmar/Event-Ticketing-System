@@ -2,7 +2,6 @@
 import { useNavigate } from "react-router-dom";
 import "./styles/ManageOrganizerEvents.css"; // Using the same CSS file
 
-
 const ManageOrganizerEvents = ({ user }) => {
   const navigate = useNavigate();
 

@@ -16,6 +16,7 @@ import UserBookingsPage from "./UserBookingsPage";
 import OrganizerEventsPage from "./components/OrganizerEventsPage"; // Add this import
 import CreateEventPage from "./components/CreateEventPage.jsx";
 import AdminEventsPage from "./components/AdminEvents.jsx";
+import EditEvent from "./components/EventView/EditEvent.jsx";
 function App() {
   return (
     <ThemeProvider>
@@ -36,6 +37,7 @@ function App() {
           <Route path="/organizer-events" element={<><NavBar /><OrganizerEventsPage /><Footer/></>} />
           <Route path="/create-event" element={<><NavBar /><CreateEventPage /><Footer/></>} />
           <Route path="/admin/events" element={<><NavBar /><AdminEventsPage /><Footer/></>} />
+          <Route path="/edit-event/:id" element={<><NavBar /><EditEvent /><Footer/></>} />
         </Routes>
       </Router>
     </ThemeProvider>
