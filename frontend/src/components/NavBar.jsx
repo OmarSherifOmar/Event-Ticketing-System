@@ -4,17 +4,23 @@ import { useEffect, useState } from "react";
 
 function NavBar() {
   const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("user"));
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+  });
 
   useEffect(() => {
     function handleStorage() {
-      setIsLoggedIn(!!localStorage.getItem("user"));
+      const stored = localStorage.getItem("user");
+      setUser(stored ? JSON.parse(stored) : null);
     }
     window.addEventListener("storage", handleStorage);
-    // Update state on mount in case login/logout happens in this tab
     handleStorage();
     return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  }, [location]);
+
+  const isLoggedIn = !!user;
+  const isAdmin = user && user.role && user.role === "System Admin";
 
   return (
     <div className="navmain">
@@ -37,9 +43,18 @@ function NavBar() {
             </>
           )}
           {isLoggedIn && (
-            <li>
-              <Link to="/profile" className={location.pathname === "/profile" ? "active" : ""}>My Profile</Link>
-            </li>
+            <>
+              <li>
+                <Link to="/profile" className={location.pathname === "/profile" ? "active" : ""}>My Profile</Link>
+              </li>
+              {isAdmin && (
+                <li>
+                  <Link to="/admin/settings" className={location.pathname === "/admin/settings" ? "active" : ""}>
+                    Manage Settings
+                  </Link>
+                </li>
+              )}
+            </>
           )}
         </ul>
       </nav>
