@@ -60,16 +60,19 @@ export default function Login() {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`${API_URL}/auth/login`, form, { withCredentials: true });
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      toast.success("Login successful!");
-      setTimeout(() => navigate("/profile"), 1000);
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed.");
+  e.preventDefault();
+  try {
+    const response = await axios.post(`${API_URL}/auth/login`, form, { withCredentials: true });
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token); // Store the token
     }
-  };
+    toast.success("Login successful!");
+    setTimeout(() => navigate("/profile"), 1000);
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Login failed.");
+  }
+};
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
