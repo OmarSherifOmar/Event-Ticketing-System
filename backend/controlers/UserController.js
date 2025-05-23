@@ -185,18 +185,21 @@ exports.updateUserRole = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
-        updatedUser.resetToken = undefined;
-        const token = jwt.sign(
-            { id: updatedUser.userId, role: updatedUser.role },
-            process.env.SECRET_KEY,
-            { expiresIn: "1h" }
-        );
 
-        res.cookie("token", token, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === "production", 
-            maxAge: 3600000, //(1 hour)
-        });
+        
+        if (req.user.id === updatedUser.id) {
+            const token = jwt.sign(
+                { id: updatedUser.id, role: updatedUser.role },
+                process.env.SECRET_KEY,
+                { expiresIn: "1h" }
+            );
+            res.cookie("token", token, {
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === "production", 
+                maxAge: 3600000, //(1 hour)
+            });
+        }
+
         res.status(200).json({ message: "User role updated successfully", updatedUser });
     } catch (error) {
         console.error("Error updating user role:", error); 
