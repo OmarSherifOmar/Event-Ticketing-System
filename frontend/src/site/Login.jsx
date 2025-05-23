@@ -68,7 +68,7 @@ export default function Login() {
       localStorage.setItem("token", response.data.token); // Store the token
     }
     toast.success("Login successful!");
-    setTimeout(() => navigate("/profile"), 1000);
+    setTimeout(() => navigate("/"), 1000);
   } catch (err) {
     toast.error(err.response?.data?.message || "Login failed.");
   }
