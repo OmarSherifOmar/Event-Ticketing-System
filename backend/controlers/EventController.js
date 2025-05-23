@@ -56,7 +56,7 @@ PostEvent: async (req, res) => {
         ticketPricing: req.body.ticketPricing,
         totalTickets: req.body.totalTickets,
         remainingTickets: req.body.remainingTickets,
-        organizer: organizerId, 
+        organizer : req.body.organizer,
         createdAt: req.body.createdAt,
         status: req.body.status,
     });
@@ -65,6 +65,8 @@ PostEvent: async (req, res) => {
         const newEvent = await Event1.save();
         return res.status(201).json(newEvent);
     } catch (e) {
+            console.error("❌ Error saving event:", e); // ← very important
+
         return res.status(500).json({ message: e.message });
     }
 },

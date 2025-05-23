@@ -13,7 +13,8 @@ import AllUsers from "./components/AllUsers"; // <-- import AllUsers
 import EditUserRole from "./components/EditUserRole";
 import DeleteUser from "./components/DeleteUser";
 import UserBookingsPage from "./UserBookingsPage";
-
+import OrganizerEventsPage from "./components/OrganizerEventsPage"; // Add this import
+import CreateEventPage from "./components/CreateEventPage.jsx";
 function App() {
   return (
     <ThemeProvider>
@@ -31,6 +32,8 @@ function App() {
           <Route path="/profile" element={<><NavBar />,<Profile />,<Footer/></>} />
           <Route path="/bookings" element={<><NavBar />,<UserBookingsPage />,<Footer/></>} />
           <Route path="/events/:id" element={<><NavBar />,<EventDetails />,<Footer/></>} />
+          <Route path="/organizer-events" element={<><NavBar /><OrganizerEventsPage /><Footer/></>} />
+          <Route path="/create-event" element={<><NavBar /><CreateEventPage /><Footer/></>} />
         </Routes>
       </Router>
     </ThemeProvider>
