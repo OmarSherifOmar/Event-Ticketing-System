@@ -185,18 +185,21 @@ exports.updateUserRole = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
-        updatedUser.resetToken = undefined;
-        const token = jwt.sign(
-            { id: updatedUser.userId, role: updatedUser.role },
-            process.env.SECRET_KEY,
-            { expiresIn: "1h" }
-        );
 
-        res.cookie("token", token, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === "production", 
-            maxAge: 3600000, //(1 hour)
-        });
+        
+        if (req.user.id === updatedUser.id) {
+            const token = jwt.sign(
+                { id: updatedUser.id, role: updatedUser.role },
+                process.env.SECRET_KEY,
+                { expiresIn: "1h" }
+            );
+            res.cookie("token", token, {
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === "production", 
+                maxAge: 3600000, //(1 hour)
+            });
+        }
+
         res.status(200).json({ message: "User role updated successfully", updatedUser });
     } catch (error) {
         console.error("Error updating user role:", error); 
@@ -408,5 +411,22 @@ exports.resetPassword = async (req, res) => {
     } catch (error) {
         console.error("Reset password error:", error);
         res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+// Top up wallet
+exports.topUpWallet = async (req, res) => {
+    try {
+        const { amount } = req.body;
+        if (!amount || isNaN(amount) || amount <= 0) {
+            return res.status(400).json({ message: "Invalid top-up amount" });
+        }
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        user.wallet = (user.wallet || 0) + Number(amount);
+        await user.save();
+        res.json({ message: "Wallet topped up successfully", wallet: user.wallet });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to top up wallet", error: err.message });
     }
 };
