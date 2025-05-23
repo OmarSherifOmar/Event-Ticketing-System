@@ -12,7 +12,7 @@ import AdminSettings from "./components/AdminSettings";
 import AllUsers from "./components/AllUsers"; // <-- import AllUsers
 import EditUserRole from "./components/EditUserRole";
 import DeleteUser from "./components/DeleteUser";
-
+import UserBookingsPage from "./UserBookingsPage";
 
 function App() {
   return (
@@ -27,7 +27,10 @@ function App() {
           <Route path="/admin/settings" element={<><NavBar /><AdminSettings /><Footer /></>} />
           <Route path="/admin/users" element={<><NavBar /><AllUsers /><Footer /></>} />
           <Route path="/admin/edit-user-role" element={<><NavBar /><EditUserRole /><Footer /></>} />
-<Route path="/admin/delete-user" element={<><NavBar /><DeleteUser /><Footer /></>} />
+          <Route path="/admin/delete-user" element={<><NavBar /><DeleteUser /><Footer /></>} />
+          <Route path="/profile" element={<><NavBar />,<Profile />,<Footer/></>} />
+          <Route path="/bookings" element={<><NavBar />,<UserBookingsPage />,<Footer/></>} />
+          <Route path="/events/:id" element={<><NavBar />,<EventDetails />,<Footer/></>} />
         </Routes>
       </Router>
     </ThemeProvider>

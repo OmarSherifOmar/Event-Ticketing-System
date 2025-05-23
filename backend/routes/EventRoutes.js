@@ -12,7 +12,7 @@ router.get("/all", authenticate, authorizationMiddleware(["System Admin"]), Even
 
 router.post("/", authenticate, authorizationMiddleware(["Organizer"]), EventController.PostEvent);
 
-router.get("/:id", EventController.getEvent);
+router.get("/:id", authenticate, authorizationMiddleware(["Organizer", "Standard User", "System Admin"]), EventController.getEvent);
 
 router.put("/:id", authenticate, authorizationMiddleware(["Organizer", "System Admin"]), EventController.EditEvent);
 

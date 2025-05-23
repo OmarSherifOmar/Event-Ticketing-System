@@ -49,8 +49,8 @@
 }
 
 .profile-settings-btn {
-  background: #a777e3;
-  color: #fff;
+  background: #a777e3 !important;
+  color: #fff !important;
   border: none;
   border-radius: 50%;
   padding: 0.7rem;
@@ -60,10 +60,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 0.7rem;
+  box-shadow: 0 1px 4px #e0e0e0;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
 }
 
-.profile-settings-btn:hover {
-  background: #8a5cc7;
+.profile-settings-btn:hover,
+.profile-settings-btn:focus {
+  background: #8a5cc7 !important;
+  color: #fff !important;
 }
 
 .profile-settings-dropdown {
@@ -210,4 +218,98 @@
 
 .profile-welcome-name {
   color: #a777e3;
+}
+
+/* Wallet Card Styles */
+.profile-wallet-card {
+  background: #232526;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(110, 142, 251, 0.10);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  min-width: 220px;
+  max-width: 260px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1.5rem;
+}
+
+.profile-wallet-card.profile-wallet-card-right {
+  background: #232526;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(110, 142, 251, 0.13);
+  padding: 3rem 2.5rem 2.5rem 2.5rem;
+  min-width: 320px;
+  width: 50%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.profile-wallet-balance-label {
+  color: #a777e3;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
+}
+
+.profile-wallet-balance-amount {
+  color: #fff;
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin-bottom: 2.2rem;
+  letter-spacing: 2px;
+}
+
+.profile-wallet-topup-input {
+  font-size: 1.3rem;
+  border: 1px solid #bdbdbd;
+  border-radius: 6px;
+  padding: 10px 14px;
+  outline: none;
+  margin-right: 1rem;
+  width: 120px;
+}
+
+.profile-wallet-topup-btn {
+  padding: 12px 32px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #a777e3, #6e8efb);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-wallet-topup-btn:hover {
+  background: linear-gradient(90deg, #6e8efb, #a777e3);
+}
+
+.profile-edit-btn {
+  background: #a777e3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+  margin-bottom: 0.7rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 1px 4px #e0e0e0;
+}
+
+.profile-edit-btn:hover,
+.profile-edit-btn:focus {
+  background: #8a5cc7;
+  color: #fff;
 }
