@@ -13,6 +13,7 @@ const { getAnalytics, getUserEvent } = require("../controlers/EventController");
 const authenticate = require("../middleware/authenticationMiddleware");
 const booking = require("../controlers/bookingController");
 const authorizationMiddleware = require("../middleware/authorizationMiddleware");
+const { topUpWallet } = require("../controlers/UserController");
 
 const router = express.Router();
 
@@ -44,5 +45,8 @@ router.get('/:id', authenticate, authorizationMiddleware(['System Admin']), getU
 router.put('/:id', authenticate, authorizationMiddleware(['System Admin']), updateUserRole);
 
 router.delete('/:id', authenticate, authorizationMiddleware(['System Admin']), deleteUser);
+
+// Top up wallet
+router.post("/wallet/topup", authenticate, authorizationMiddleware(['Standard User']), topUpWallet);
 
 module.exports = router;

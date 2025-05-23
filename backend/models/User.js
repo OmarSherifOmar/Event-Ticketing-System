@@ -27,8 +27,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    wallet: {
+    type: Number,
+    default: 0,
+    min: 0
+   },
     resetToken: { type: String },
 resetTokenExpiry: { type: Date }
+
 });
 
 const User = mongoose.model("User", userSchema);
