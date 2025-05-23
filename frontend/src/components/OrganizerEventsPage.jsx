@@ -46,7 +46,7 @@ const OrganizerEventsPage = () => {
       <div className="events-list">
         {events.length > 0 ? (
           events.map(event => (
-            <div key={event._id} className="event-card">
+            <div key={event._id} className="event-cardOrg">
               <p><strong>Event Name: </strong> {event.title}</p>
               <p><strong>Date: </strong>{new Date(event.date).toLocaleString()}</p>
               <p><strong>Location: </strong>{event.location}</p>

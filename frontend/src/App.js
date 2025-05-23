@@ -15,6 +15,7 @@ import DeleteUser from "./components/DeleteUser";
 import UserBookingsPage from "./UserBookingsPage";
 import OrganizerEventsPage from "./components/OrganizerEventsPage"; // Add this import
 import CreateEventPage from "./components/CreateEventPage.jsx";
+import AdminEventsPage from "./components/AdminEvents.jsx";
 function App() {
   return (
     <ThemeProvider>
@@ -34,6 +35,7 @@ function App() {
           <Route path="/events/:id" element={<><NavBar />,<EventDetails />,<Footer/></>} />
           <Route path="/organizer-events" element={<><NavBar /><OrganizerEventsPage /><Footer/></>} />
           <Route path="/create-event" element={<><NavBar /><CreateEventPage /><Footer/></>} />
+          <Route path="/admin/events" element={<><NavBar /><AdminEventsPage /><Footer/></>} />
         </Routes>
       </Router>
     </ThemeProvider>

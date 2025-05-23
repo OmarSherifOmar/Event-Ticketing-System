@@ -16,6 +16,9 @@ function AdminSettings() {
   const handleDeleteUser = () => {
     navigate("/admin/delete-user");
   };
+  const handleEditEventStatus = () => {
+    navigate("/admin/events");
+  };
 
   return (
     <div className="admin-settings-container">
@@ -28,6 +31,9 @@ function AdminSettings() {
       </button>
       <button className="admin-btn" onClick={handleDeleteUser} style={{ marginLeft: "1rem", background: "linear-gradient(90deg, #e36477, #e36e6e)" }}>
         Delete User
+      </button>
+      <button className="admin-btn" onClick={handleEditEventStatus} style={{ marginLeft: "1rem", background: "linear-gradient(90deg, #6e8efb, #a777e3)" }}>
+        Edit Event Status
       </button>
       {/* Add more admin controls here */}
     </div>

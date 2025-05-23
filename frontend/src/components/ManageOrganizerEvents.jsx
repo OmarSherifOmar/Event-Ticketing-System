@@ -1,23 +1,21 @@
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
-import "./styles/ManageOrganizerEvents.css"; // Optional for styling
+import "./styles/ManageOrganizerEvents.css"; // Using the same CSS file
+
 
 const ManageOrganizerEvents = ({ user }) => {
   const navigate = useNavigate();
 
-  const ManageOrganizerEvents = () => {
+  const handleManageEvents = () => {
     navigate("/organizer-events");
   };
 
+  // Early return if not organizer (note: case-sensitive comparison)
+  if (!user||user.role !== "Organizer") {  // Changed from != to !== for strict comparison
+    return null;
+  }
 
-  return (
-    <button 
-      className="manage-Events-btn"
-      onClick={ManageOrganizerEvents}
-    >
-      Manage My Events
-    </button>
-  );
+  
 };
 
 export default ManageOrganizerEvents;
