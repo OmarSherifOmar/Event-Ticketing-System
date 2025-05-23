@@ -107,7 +107,7 @@ function EventDetails() {
     );
   }
 
-  const isOrganizeroradmin = (user.role === "Organizer"&&event.organizer==user._id||user.role === "System Admin");
+  const isOrganizer = (user.role === "Organizer"&&event.organizer==user._id);
   const imageUrl = event.image?.startsWith("http") ? event.image : `https://${event.image}`;
 
  return (
@@ -146,7 +146,7 @@ function EventDetails() {
         </div>
 
         {/* Moved organizer controls here */}
-        {isOrganizeroradmin && (
+        {isOrganizer && (
           <div className="organizer-controls" style={{ marginTop: '20px' }}>
             <Button 
               className="edit-event-btn"
