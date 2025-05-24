@@ -1,0 +1,59 @@
+/* AdminEvent.css */
+.admin-events-container {
+  padding: 20px;
+}
+
+.filter-buttons {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.filter-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-buttons button.active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+
+.status.approved {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status.declined {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.decline-btn {
+  background-color: #ef4444;
+  margin-left: 8px;
+}

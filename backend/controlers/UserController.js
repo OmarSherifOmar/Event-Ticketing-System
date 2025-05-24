@@ -413,3 +413,20 @@ exports.resetPassword = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+// Top up wallet
+exports.topUpWallet = async (req, res) => {
+    try {
+        const { amount } = req.body;
+        if (!amount || isNaN(amount) || amount <= 0) {
+            return res.status(400).json({ message: "Invalid top-up amount" });
+        }
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        user.wallet = (user.wallet || 0) + Number(amount);
+        await user.save();
+        res.json({ message: "Wallet topped up successfully", wallet: user.wallet });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to top up wallet", error: err.message });
+    }
+};
