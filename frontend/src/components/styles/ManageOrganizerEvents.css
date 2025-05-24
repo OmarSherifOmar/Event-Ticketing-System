@@ -1,9 +1,9 @@
-/* Button.css */
-/* Base button styles */
-.btn {
+/* CreateEventButton.css */
+.manage-Events-btn {
   display: block;
   margin: 0 auto 2.5rem;
   padding: 0.8rem 2rem;
+  background: linear-gradient(90deg, #a777e3, #6e8efb);
   color: white;
   border: none;
   border-radius: 50px;
@@ -18,36 +18,18 @@
   letter-spacing: 0.5px;
 }
 
-/* Primary variant (matches your manage-Events-btn) */
-.btn-primary {
-  background: linear-gradient(90deg, #a777e3, #6e8efb);
-}
-
-.btn-primary:hover {
+.manage-Events-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 7px 20px rgba(167, 119, 227, 0.4);
   background: linear-gradient(90deg, #9d6bd9, #6484f8);
 }
 
-/* Secondary variant example */
-.btn-secondary {
-  background: linear-gradient(90deg, #6e8efb, #4facfe);
-}
-
-/* Disabled state */
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-/* Active state */
-.btn:active {
+.manage-Events-btn:active {
   transform: translateY(0);
 }
 
-/* Ripple effect */
-.btn::after {
+/* Optional ripple effect */
+.manage-Events-btn::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -61,7 +43,7 @@
   transform-origin: 50% 50%;
 }
 
-.btn:focus:not(:active)::after {
+.manage-Events-btn:focus:not(:active)::after {
   animation: ripple 0.6s ease-out;
 }
 
@@ -78,7 +60,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .btn {
+  .manage-Events-btn {
     padding: 0.7rem 1.5rem;
     font-size: 0.9rem;
     margin-bottom: 2rem;

@@ -1,0 +1,45 @@
+.organizer-events-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.event-cardOrg {
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-form input {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+button:hover {
+  opacity: 0.9;
+}

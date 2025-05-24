@@ -1,5 +1,7 @@
 const Booking = require('../models/Booking');
 const Event = require('../models/Event');
+const User = require('../models/User');
+
 exports.bookTickets = async (req, res) => {
   try {
     const { eventId, numberOfTickets } = req.body;
@@ -13,6 +15,19 @@ exports.bookTickets = async (req, res) => {
       return res.status(400).json({ message: 'Not enough tickets available' });
 
     const totalPrice = numberOfTickets * event.ticketPricing;
+
+    // Fetch user and check wallet
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (user.wallet < totalPrice) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    // Deduct from wallet
+    user.wallet -= totalPrice;
+    await user.save();
 
     const booking = await Booking.create({
       user: userId,
