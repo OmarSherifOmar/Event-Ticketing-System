@@ -57,3 +57,32 @@
   max-width: 1200px;
   padding-bottom: 40px;
 }
+/* Marquee Animation */
+.eventlist-marquee {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.eventlist-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+  gap: 24px;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Adjust EventCard width for marquee */
+.event-card {
+  min-width: 320px;
+  margin-right: 24px;
+}

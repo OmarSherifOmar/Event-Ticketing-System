@@ -195,6 +195,30 @@
   background: #a777e3;
   color: #fff;
 }
+.profile-welcome {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+  /* Animation */
+  opacity: 0;
+  transform: translateY(30px);
+  animation: welcomeFadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes welcomeFadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-welcome-name {
+  color: #a777e3;
+}
 
 /* Wallet Card Styles */
 .profile-wallet-card {

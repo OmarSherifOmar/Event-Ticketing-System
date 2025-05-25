@@ -1,9 +1,28 @@
-import React from "react";
+// components/Button.jsx
+import React from 'react';
+import './styles/Button01.css'; // We'll move the styles here
 
-export default function Button({ type, children, className = "", ...props }) {
+const Button = ({
+  children,
+  onClick,
+  variant = 'primary',
+  type = 'button',
+  disabled = false,
+  className = '',
+  ...props
+}) => {
+   
   return (
-    <button type={type} className={className} {...props}>
+    <button
+      className={`btn btn-${variant} ${className}`}
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </button>
   );
-}
+};
+
+export default Button;

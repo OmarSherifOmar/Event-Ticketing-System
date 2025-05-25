@@ -124,3 +124,41 @@ body, .main-home {
   background: #181a1b;
   color: #f1f1f1;
 }
+.loader-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 32, 34, 0.55);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 7px solid #e0e7ff;
+  border-top: 7px solid #a777e3;
+  border-right: 7px solid #6e8efb;
+  border-bottom: 7px solid #6366f1;
+  background: transparent;
+  animation: spin 5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+  box-shadow: 0 0 24px #a777e3aa, 0 2px 12px #6366f155;
+  position: relative;
+}
+
+.loader::after {
+  content: "";
+  position: absolute;
+  top: 12px; left: 12px; right: 12px; bottom: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #a777e3 0%, #fff0 70%);
+  opacity: 0.25;
+  z-index: 1;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}

@@ -9,6 +9,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = "http://localhost:5000/api/v1";
 
+// Loader component
+function Loader() {
+  return (
+    <div className="loader-overlay">
+      <div className="loader"></div>
+    </div>
+  );
+}
+
 function LoginForm({ form, onChange, onSubmit, onForgot }) {
   return (
     <form className="auth-form" onSubmit={onSubmit}>
@@ -54,6 +63,7 @@ export default function Login() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [showReset, setShowReset] = useState(false);
   const [resetForm, setResetForm] = useState({ email: "", otp: "", newPassword: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Handlers
@@ -61,19 +71,25 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(`${API_URL}/auth/login`, form, { withCredentials: true });
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("token", response.data.token);
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token); // Store the token
+      }
       toast.success("Login successful!");
-      setTimeout(() => navigate("/profile"), 1000);
+      setTimeout(() => navigate("/"), 1000);
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await axios.put(`${API_URL}/auth/forgetPassword`, { email: forgotEmail });
       toast.success("OTP sent to your email.");
@@ -81,6 +97,8 @@ export default function Login() {
       setResetForm({ ...resetForm, email: forgotEmail });
     } catch (err) {
       toast.error(err.response?.data?.message || "Error sending OTP.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,6 +108,7 @@ export default function Login() {
 
   const handleResetSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await axios.put(`${API_URL}/auth/resetpassword`, {
         email: resetForm.email,
@@ -103,12 +122,15 @@ export default function Login() {
       setResetForm({ email: "", otp: "", newPassword: "" });
     } catch (err) {
       toast.error(err.response?.data?.message || "Error resetting password.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="main-home">
       <ToastContainer />
+      {loading && <Loader />}
       {!showForgot && (
         <LoginForm
           form={form}
