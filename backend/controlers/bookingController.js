@@ -54,6 +54,13 @@ exports.cancelBooking = async (req, res) => {
     if (booking.bookingStatus === 'Canceled')
       return res.status(400).json({ message: 'Booking already canceled' });
 
+    // Refund wallet
+    const user = await User.findById(req.user.id);
+    if (user) {
+      user.wallet += booking.totalPrice;
+      await user.save();
+    }
+
     booking.bookingStatus = 'Canceled';
     await booking.save();
 

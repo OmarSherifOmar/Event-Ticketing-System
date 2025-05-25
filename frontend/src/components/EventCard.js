@@ -8,7 +8,7 @@ function EventCard({event}){
   return(
     <div  className="event-card" onClick = {() => navigate(`/events/${event._id}`)}>
       <div className="event-image-container">
-        <img className="event-image" src = "https://cdn.pixabay.com/photo/2021/10/30/17/54/desert-6755127_1280.jpg" alt= {event.title}></img>
+        <img className="event-image" src = {event.image} alt= {event.title}></img>
       </div>
     <div className="event-info"> 
       <h2 className="event-title">{event.title}</h2>
