@@ -8,11 +8,12 @@
 
 .footer-content {
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: 0;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 0 1rem;
+  padding: 0 1rem 0 2.5rem;
 }
 
 .footer-brand {
@@ -26,6 +27,7 @@
   display: flex;
   gap: 3rem;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .footer-column {
