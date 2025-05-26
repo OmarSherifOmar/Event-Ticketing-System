@@ -168,75 +168,76 @@ import React, { useEffect, useState, useRef } from "react";
 
     return (
       <div className="profile-main-layout">
-        <div className="profile-content" style={{ display: "flex", gap: "2.2rem", minHeight: "400px", alignItems: "flex-start", paddingTop: "3rem", justifyContent: "flex-start" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", minWidth: 0 }}>
-            <div className="profile-user-card" style={{ maxWidth: "320px", minWidth: "200px", flex: "0 0 260px", padding: "2rem 1.2rem", boxSizing: "border-box", marginRight: "1.2rem" }}>
-              <div className="profile-user-avatar-wrapper" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1.2rem" }}>
-                <img
-                  src={
-                    user.profilepicture
-                      ? user.profilepicture.startsWith("http")
-                        ? user.profilepicture
-                        : `http://localhost:5000/${user.profilepicture.replace(/\\/g, "/")}`
-                      : "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.name || "User")
-                  }
-                  alt="Profile"
-                  className="profile-user-avatar"
-                  style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "50%", boxShadow: "0 2px 8px #e0e0e0", cursor: "pointer" }}
-                  onClick={() => fileInputRef.current.click()}
-                  title="Click to change profile picture"
-                />
-                <input
-                  id="profile-pic-input"
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  ref={fileInputRef}
-                  onChange={handleProfilePicChange}
-                  aria-label="Upload profile picture"
-                />
-              </div>
-              <div className="profile-user-info" style={{ textAlign: "center" }}>
-                <div className="profile-user-name" style={{ fontSize: "1.15rem", fontWeight: 600, marginBottom: "0.3rem" }}>{user.name || "User Name"}</div>
-                <div className="profile-user-role" style={{ fontSize: "0.98rem", color: "#888", marginBottom: "0.7rem" }}>{user.role || "Standard User"}</div>
-                <button
-                  className="profile-edit-btn"
-                  style={{ fontSize: "0.98rem", padding: "6px 16px", borderRadius: "5px" }}
-                  onClick={() => setEditMode(true)}
-                  disabled={loading}
-                >
-                  Edit Profile
-                </button>
-                {editMode && (
-                  <form onSubmit={handleProfileUpdate} className="profile-edit-form" style={{ marginTop: "1rem" }}>
-                    <label style={{ fontSize: "0.93rem" }}>
-                      Name:
-                      <input
-                        type="text"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        disabled={loading}
-                        style={{ marginLeft: "0.5rem", fontSize: "0.98rem", padding: "4px 8px", borderRadius: "4px", border: "1px solid #ccc" }}
-                      />
-                    </label>
-                    <div style={{ marginTop: "0.7rem" }}>
-                      <button type="submit" disabled={loading} style={{ marginRight: "0.5rem", fontSize: "0.93rem" }}>Save</button>
-                      <button type="button" onClick={() => setEditMode(false)} disabled={loading} style={{ fontSize: "0.93rem" }}>
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-              {message && <div className="profile-message">{message}</div>}
-              {loading && <div className="profile-loading">Loading...</div>}
+        <div className="profile-combined-card">
+          <div className="profile-combined-section profile-combined-user">
+            {/* User Info Block - revert to old/original text/info layout */}
+            <div className="profile-user-avatar-wrapper">
+              <img
+                src={
+                  user.profilepicture
+                    ? user.profilepicture.startsWith("http")
+                      ? user.profilepicture
+                      : `http://localhost:5000/${user.profilepicture.replace(/\\/g, "/")}`
+                    : "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.name || "User")
+                }
+                alt="Profile"
+                className="profile-user-avatar"
+                onClick={() => fileInputRef.current.click()}
+                title="Click to change profile picture"
+              />
+              <input
+                id="profile-pic-input"
+                type="file"
+                accept="image/*"
+                className="profile-pic-input"
+                ref={fileInputRef}
+                onChange={handleProfilePicChange}
+                aria-label="Upload profile picture"
+              />
             </div>
-            <div className="profile-navbar-right" ref={settingsRef} style={{ marginLeft: "0.7rem", alignSelf: "flex-start" }}>
+            <div className="profile-user-info">
+              <div className="profile-user-name">{user.name || "User Name"}</div>
+              <div className="profile-user-role">{user.role || "Standard User"}</div>
+              <button
+                className="profile-edit-btn"
+                onClick={() => setEditMode(true)}
+                disabled={loading}
+              >
+                Edit Profile
+              </button>
+              {editMode && (
+                <form onSubmit={handleProfileUpdate} className="profile-edit-form">
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    disabled={loading}
+                  />
+                  <div>
+                    <button type="submit" disabled={loading}>Save</button>
+                    <button type="button" onClick={() => setEditMode(false)} disabled={loading}>
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+            {message && <div className="profile-message">{message}</div>}
+            {loading && <div className="profile-loading">Loading...</div>}
+          </div>
+          {/* Divider lines and settings button */}
+          <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+            {user.role === "Standard User" && (
+            <>
+            <div className="profile-combined-divider"></div>
+            <div className="profile-combined-divider"></div>
+            </>
+          )}
+            <div className="profile-navbar-right" ref={settingsRef}>
               <button
                 className="profile-settings-btn"
                 onClick={() => setSettingsOpen((open) => !open)}
                 aria-label="Settings"
-                style={{ fontSize: "1.5rem", padding: "8px 12px", borderRadius: "50%", background: "#f5f5f5", border: "none", boxShadow: "0 1px 4px #e0e0e0", marginTop: "0.5rem" }}
               >
                 <FaCog />
               </button>
@@ -275,11 +276,11 @@ import React, { useEffect, useState, useRef } from "react";
               )}
             </div>
           </div>
-
+          {/* Wallet Section */}
           {user.role === "Standard User" && (
-            <div className="profile-wallet-card profile-wallet-card-right" style={{ minWidth: "340px", maxWidth: "480px", flex: "1.3 1 420px", padding: "2.2rem 2.2rem", boxSizing: "border-box", marginLeft: "0.5rem" }}>
-              <div className="profile-wallet-balance-label" style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "0.7rem" }}>Wallet Balance</div>
-              <div className="profile-wallet-balance-amount" style={{ fontSize: "2.2rem", fontWeight: 700, marginBottom: "1.5rem" }}>${user.wallet !== undefined ? user.wallet.toFixed(2) : "0.00"}</div>
+            <div className="profile-combined-section profile-combined-wallet">
+              <div className="profile-wallet-balance-label">Wallet Balance</div>
+              <div className="profile-wallet-balance-amount">${user.wallet !== undefined ? user.wallet.toFixed(2) : "0.00"}</div>
               <form
                 onSubmit={handleWalletTopUp}
                 style={{ marginTop: "1.2rem" }}
@@ -291,12 +292,10 @@ import React, { useEffect, useState, useRef } from "react";
                   step="0.01"
                   placeholder="Amount"
                   className="profile-wallet-topup-input"
-                  style={{ width: "130px", marginRight: "1rem", padding: "12px 16px", borderRadius: "7px", border: "1px solid #bdbdbd", fontSize: "1.2rem" }}
                 />
                 <button
                   type="submit"
                   className="profile-wallet-topup-btn"
-                  style={{ padding: "13px 36px", borderRadius: "7px", background: "linear-gradient(90deg, #a777e3, #6e8efb)", color: "#fff", border: "none", fontWeight: 700, fontSize: "1.1rem", cursor: "pointer" }}
                 >
                   Top Up
                 </button>

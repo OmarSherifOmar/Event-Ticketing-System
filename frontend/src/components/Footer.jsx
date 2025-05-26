@@ -28,7 +28,7 @@ function Footer({ theme }) {
             <h4>Follow Us</h4>
             <a href="https://facebook.com">Facebook</a>
             <a href="https://twitter.com">Twitter</a>
-            <a href="https://instagram.com">Instagram</a>
+            <a href="https://www.instagram.com/omarhossamaboouf?igsh=cHp3MzBnNmRtZ2ph&utm_source=qr">Instagram</a>
           </div>
         </div>
       </div>

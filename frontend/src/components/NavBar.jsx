@@ -1,5 +1,5 @@
-import "./styles/NavBar.css"
-import { Link, useLocation } from "react-router-dom";
+import "./styles/NavBar.css";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function NavBar() {
@@ -20,7 +20,8 @@ function NavBar() {
   }, [location]);
 
   const isLoggedIn = !!user;
-  const isAdmin = user && user.role && user.role === "System Admin";
+  const isAdmin = user?.role === "System Admin";
+  const isOrganizer = user?.role === "Organizer";
 
   return (
     <div className="navmain">
@@ -54,6 +55,16 @@ function NavBar() {
                   </Link>
                 </li>
               )}
+              {isOrganizer && (
+                <li>
+                  <Link 
+                    to="/organizer-events" 
+                    className={`manage-events-link ${location.pathname === "/organizer-events" ? "active" : ""}`}
+                  >
+                    Manage My Events
+                  </Link>
+                </li>
+              )}
             </>
           )}
         </ul>
@@ -61,4 +72,5 @@ function NavBar() {
     </div>
   );
 }
+
 export default NavBar;
