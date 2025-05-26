@@ -116,8 +116,12 @@ function EventDetails() {
       <img className="event-details-image" src={imageUrl} alt={event.title || "Event"} />
       
       <div className="event-details-info">
-        <h1>{event.title || "No Title"}</h1>
-        <div className="event-details-row">
+          <div className="event-header">
+            <h1>{event.title || "No Title"}</h1>
+            <div className={`event-status ${event.status}`}>
+              {event.status.toUpperCase()}
+            </div>
+         
           <MdLocationOn className="details-icon" />
           <span>{event.location || "No Location"}</span>
         </div>

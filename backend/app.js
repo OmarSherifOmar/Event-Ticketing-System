@@ -6,24 +6,22 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-console.log("DB_URL:", process.env.DB_URL);
-console.log("PORT:", process.env.PORT || 5000);
-console.log("ORIGIN:", process.env.ORIGIN);
-
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
+
+// CORS Configuration
 app.use(cors({
-    origin: [
-        process.env.ORIGIN || "http://localhost:3000",
-        "http://localhost:3001"
-    ],
-    credentials: true
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
-// Serve uploads folder as static
+// Static files
 app.use('/uploads', express.static('uploads'));
 
-// Register routes outside try/catch for better error visibility
+// Routes
 const authRoute = require('./routes/authRoute');
 app.use('/api/v1/auth', authRoute);
 
@@ -36,9 +34,7 @@ app.use('/api/v1/users', userRoutes);
 const eventRoutes = require('./routes/EventRoutes');
 app.use('/api/v1/events', eventRoutes);
 
-console.log("Routes loaded successfully");
-
-// Connect to MongoDB Atlas
+// Database connection
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("Connected to MongoDB Atlas"))
     .catch((err) => {
@@ -46,7 +42,7 @@ mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology
         process.exit(1);
     });
 
-// Start the server
+// Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
