@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./styles/AdminEvent.css";
-
+import { useNavigate } from "react-router-dom";
 const API_URL = "http://localhost:5000/api/v1/events";
 
 function AdminEventsPage() {
@@ -8,7 +8,26 @@ function AdminEventsPage() {
   const [filter, setFilter] = useState("pending");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+     const navigate = useNavigate(); // You need to call this hook inside a component
 
+useEffect(() => {
+
+  const checkAuthorization = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      // Immediate check for basic authorization
+      if (!token || !user || !["System Admin"].includes(user.role)) {
+        navigate("/Unauthorized");
+        return;
+      } 
+    } catch (err) {
+      navigate("/Unauthorized");
+    }
+};
+checkAuthorization();
+})
   useEffect(() => {
     const fetchEvents = async () => {
       try {
