@@ -33,7 +33,14 @@ const userSchema = new mongoose.Schema({
     min: 0
    },
     resetToken: { type: String },
-resetTokenExpiry: { type: Date }
+resetTokenExpiry: { type: Date },
+
+mfaEnabled: {
+    type: Boolean,
+    default: false
+},
+mfaCode: String,
+mfaCodeExpiry: Date,
 
 });
 

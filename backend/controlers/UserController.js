@@ -2,11 +2,14 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose"); 
 const jwt = require("jsonwebtoken");
-
-
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 const JWT_SECRET = "your_jwt_secret_key";
 
- 
+
+
+
+
 exports.register = async (req, res) => {
     try {
         // For debugging: log body and file
@@ -44,6 +47,22 @@ exports.register = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+async function sendMfaCodeEmail(email, code) {
+    const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Your MFA Code",
+        text: `Your MFA code is: ${code}`,
+    });
+}
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -58,6 +77,19 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
+ if (user.mfaEnabled) {
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            user.mfaCode = code;
+            user.mfaCodeExpiry = Date.now() + 5 * 60 * 1000; // 5 mins
+            await user.save();
+
+            await sendMfaCodeEmail(user.email, code);//this line is not makin me log in its the error
+
+            return res.status(200).json({
+                message: "MFA code sent to your email",
+                mfaRequired: true
+            });
+        }
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.SECRET_KEY,
@@ -85,6 +117,7 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 };
+
 
 exports.logout = (req, res) => {
     res.clearCookie("token", {
@@ -245,9 +278,70 @@ exports.getCurrentUserProfile = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 
+exports.enableMfa = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.mfaEnabled = true;
+        await user.save();
+
+        res.status(200).json({ message: "MFA enabled successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Server error", error: err });
+    }
+};
+exports.verifyMfa= async (req, res) => {
+    try {
+        const { email, code } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user || !user.mfaEnabled) {
+            return res.status(400).json({ message: "Invalid request" });
+        }
+
+        if (
+            user.mfaCode !== code ||
+            !user.mfaCodeExpiry ||
+            user.mfaCodeExpiry < Date.now()
+        ) {
+            return res.status(401).json({ message: "Invalid or expired MFA code" });
+        }
+
+        // Clear code
+        user.mfaCode = undefined;
+        user.mfaCodeExpiry = undefined;
+        await user.save();
+
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 3600000,
+        });
+
+        return res.status(200).json({
+            message: "MFA verified",
+            token,
+            user: {
+                name: user.name,
+                role: user.role,
+                profilepicture: user.profilepicture,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
 
 exports.forgetPassword = async (req, res) => {
     try {
