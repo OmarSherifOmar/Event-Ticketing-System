@@ -2,15 +2,28 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose"); 
 const jwt = require("jsonwebtoken");
-
-
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 const JWT_SECRET = "your_jwt_secret_key";
 
- 
+
+
+
+
 exports.register = async (req, res) => {
     try {
+        // For debugging: log body and file
         console.log("Request body:", req.body); 
-        const { name, email, password, role, profilepicture } = req.body;
+        console.log("Uploaded file:", req.file);
+
+        const { name, email, password, role } = req.body;
+        // Get the uploaded file path (if file was uploaded)
+        const profilepicture = req.file ? req.file.path : null;
+
+        // Validate required fields
+        if (!name || !email || !password ) {
+            return res.status(400).json({ message: "All fields are required." });
+        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -34,6 +47,23 @@ exports.register = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+async function sendMfaCodeEmail(email, code) {
+    const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Your MFA Code",
+        text: `Your MFA code is: ${code}`,
+    });
+}
+
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -48,6 +78,25 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
+        // Only require MFA if enabled
+        if (user.mfaEnabled) {
+            // Generate a 6-digit code and expiry
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            user.mfaCode = code;
+            user.mfaCodeExpiry = Date.now() + 5 * 60 * 1000; // 5 mins
+            await user.save();
+
+            // Send code via email
+            await sendMfaCodeEmail(user.email, code);
+
+            // Do NOT send token/user yet
+            return res.status(200).json({
+                message: "MFA code sent to your email",
+                mfaRequired: true
+            });
+        }
+
+        // If MFA not enabled, proceed as normal
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.SECRET_KEY,
@@ -55,15 +104,33 @@ exports.login = async (req, res) => {
         );
 
         res.cookie("token", token, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === "production", 
-            maxAge: 3600000, //(1 hour)
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 3600000,
         });
 
-        res.status(200).json({ message: "Login successful", token });
+        res.status(200).json({
+            message: "Login successful",
+            token,
+            user: {
+                name: user.name,
+                role: user.role,
+                profilepicture: user.profilepicture,
+                email: user.email
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
+};
+
+exports.logout = (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
+    });
+    res.status(200).json({ message: "Logged out successfully" });
 };
 
 // Update user profile
@@ -83,7 +150,33 @@ exports.updateProfile = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 };
+exports.updateProfilePicture = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "Unauthorized: user not found in request" });
+        }
+        const userId = req.user.id;
+        const profilepicture = req.file ? req.file.path : null;
 
+        if (!profilepicture) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { profilepicture },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ profilepicture: updatedUser.profilepicture });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
 exports.deleteUser = async (req, res) => {
     console.log("Delete user request received for ID:", req.params.id);
     try {
@@ -130,18 +223,21 @@ exports.updateUserRole = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
-        updatedUser.resetToken = undefined;
-        const token = jwt.sign(
-            { id: updatedUser.userId, role: updatedUser.role },
-            process.env.SECRET_KEY,
-            { expiresIn: "1h" }
-        );
 
-        res.cookie("token", token, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === "production", 
-            maxAge: 3600000, //(1 hour)
-        });
+        
+        if (req.user.id === updatedUser.id) {
+            const token = jwt.sign(
+                { id: updatedUser.id, role: updatedUser.role },
+                process.env.SECRET_KEY,
+                { expiresIn: "1h" }
+            );
+            res.cookie("token", token, {
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === "production", 
+                maxAge: 3600000, //(1 hour)
+            });
+        }
+
         res.status(200).json({ message: "User role updated successfully", updatedUser });
     } catch (error) {
         console.error("Error updating user role:", error); 
@@ -187,9 +283,70 @@ exports.getCurrentUserProfile = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 
+exports.enableMfa = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.mfaEnabled = true;
+        await user.save();
+
+        res.status(200).json({ message: "MFA enabled successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Server error", error: err });
+    }
+};
+exports.verifyMfa = async (req, res) => {
+    try {
+        const { email, code } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid request" });
+        }
+
+        if (
+            user.mfaCode !== code ||
+            !user.mfaCodeExpiry ||
+            user.mfaCodeExpiry < Date.now()
+        ) {
+            return res.status(401).json({ message: "Invalid or expired MFA code" });
+        }
+
+        // Clear code
+        user.mfaCode = undefined;
+        user.mfaCodeExpiry = undefined;
+        await user.save();
+
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 3600000,
+        });
+
+        return res.status(200).json({
+            message: "MFA verified",
+            token,
+            user: {
+                name: user.name,
+                role: user.role,
+                profilepicture: user.profilepicture,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
 
 exports.forgetPassword = async (req, res) => {
     try {
@@ -353,5 +510,47 @@ exports.resetPassword = async (req, res) => {
     } catch (error) {
         console.error("Reset password error:", error);
         res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+// Top up wallet
+exports.topUpWallet = async (req, res) => {
+    try {
+        const { amount } = req.body;
+        if (!amount || isNaN(amount) || amount <= 0) {
+            return res.status(400).json({ message: "Invalid top-up amount" });
+        }
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        user.wallet = (user.wallet || 0) + Number(amount);
+        await user.save();
+        res.json({ message: "Wallet topped up successfully", wallet: user.wallet });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to top up wallet", error: err.message });
+    }
+};
+exports.enableMfa = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        user.mfaEnabled = true;
+        await user.save();
+        res.status(200).json({ message: "MFA enabled" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+exports.disableMfa = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        user.mfaEnabled = false;
+        await user.save();
+        res.status(200).json({ message: "MFA disabled" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
     }
 };

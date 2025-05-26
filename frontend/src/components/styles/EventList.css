@@ -1,0 +1,89 @@
+@import './AllEventsList.css';
+/* EventCard.css */
+.event-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(60, 72, 88, 0.12);
+  overflow: hidden;
+  width: 320px;
+  margin-bottom: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.7s;
+}
+
+.event-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 40px rgba(60, 72, 88, 0.18);
+}
+
+.event-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 2px solid #e0e7ff;
+  background: #f3f4f6;
+}
+
+.event-info {
+  padding: 18px 20px 10px 20px;
+  text-align: center;
+}
+
+.event-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.3rem;
+  color: #2d3a4b;
+  font-weight: 700;
+}
+
+.event-date,
+.event-location,
+.event-price {
+  margin: 4px 0;
+  color: #4b5563;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.eventlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  justify-items: center;
+  align-items: stretch;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding-bottom: 40px;
+}
+/* Marquee Animation */
+.eventlist-marquee {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.eventlist-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+  gap: 24px;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Adjust EventCard width for marquee */
+.event-card {
+  min-width: 320px;
+  margin-right: 24px;
+}

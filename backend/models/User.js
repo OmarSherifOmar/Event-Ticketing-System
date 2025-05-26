@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     profilepicture: {
         type: String,
-        required: true
+        required: false
     },
     password: {
         type: String,
@@ -27,8 +27,21 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    wallet: {
+    type: Number,
+    default: 0,
+    min: 0
+   },
     resetToken: { type: String },
-resetTokenExpiry: { type: Date }
+resetTokenExpiry: { type: Date },
+
+mfaEnabled: {
+    type: Boolean,
+    default: false
+},
+mfaCode: String,
+mfaCodeExpiry: Date,
+
 });
 
 const User = mongoose.model("User", userSchema);
