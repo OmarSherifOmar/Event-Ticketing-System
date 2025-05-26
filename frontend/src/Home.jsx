@@ -7,7 +7,7 @@ function Home() {
     const user = JSON.parse(localStorage.getItem("user"));
 
   return (
-    <>
+    <> 
       <main className="home-container">
         <CreateEventButton user={user} />
         <EventList />

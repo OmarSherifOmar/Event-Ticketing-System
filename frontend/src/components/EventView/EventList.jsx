@@ -18,10 +18,21 @@ function EventList() {
   return (
     <div className="eventlist-container">
       <h2 className="eventlist-title">Upcoming Events</h2>
+      <button
+        className="all-events-list-view-btn"
+        style={{ marginBottom: "2rem", marginLeft: 0 }}
+        onClick={() => (window.location = "/all-events")}
+      >
+        Show All Events
+      </button>
       <div className="eventlist-marquee">
         <div className="eventlist-marquee-track">
           {marqueeEvents.map((event, idx) => (
-            <EventCard key={event._id + "-" + idx} event={event} onView={handleView} />
+            <EventCard
+              key={event._id + "-" + idx}
+              event={event}
+              onView={handleView}
+            />
           ))}
         </div>
       </div>
