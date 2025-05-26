@@ -57,6 +57,26 @@ function ResetForm({ form, onChange, onSubmit, onCancel }) {
   );
 }
 
+// MFA Form
+function MfaForm({ email, code, onChange, onSubmit, onCancel }) {
+  return (
+    <form className="auth-form" onSubmit={onSubmit}>
+      <h3>MFA Verification</h3>
+      <p>Enter the 6-digit code sent to <b>{email}</b></p>
+      <TextField
+        type="text"
+        name="mfaCode"
+        placeholder="Enter MFA code"
+        value={code}
+        onChange={onChange}
+        required
+      />
+      <Button type="submit">Verify</Button>
+      <Button type="button" className="cancel-btn" onClick={onCancel}>Cancel</Button>
+    </form>
+  );
+}
+
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showForgot, setShowForgot] = useState(false);
@@ -64,6 +84,12 @@ export default function Login() {
   const [showReset, setShowReset] = useState(false);
   const [resetForm, setResetForm] = useState({ email: "", otp: "", newPassword: "" });
   const [loading, setLoading] = useState(false);
+
+  // MFA state
+  const [showMfa, setShowMfa] = useState(false);
+  const [mfaEmail, setMfaEmail] = useState("");
+  const [mfaCode, setMfaCode] = useState("");
+
   const navigate = useNavigate();
 
   // Handlers
@@ -74,12 +100,19 @@ export default function Login() {
     setLoading(true);
     try {
       const response = await axios.post(`${API_URL}/auth/login`, form, { withCredentials: true });
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token); // Store the token
+      if (response.data.mfaRequired) {
+        setShowMfa(true);
+        setMfaEmail(form.email);
+        setMfaCode("");
+        toast.info("MFA code sent to your email.");
+      } else {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
+        }
+        toast.success("Login successful!");
+        setTimeout(() => navigate("/"), 1000);
       }
-      toast.success("Login successful!");
-      setTimeout(() => navigate("/"), 1000);
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed.");
     } finally {
@@ -112,7 +145,7 @@ export default function Login() {
     try {
       await axios.put(`${API_URL}/auth/resetpassword`, {
         email: resetForm.email,
-        token: resetForm.otp, // Change to otp: resetForm.otp if your backend expects 'otp'
+        token: resetForm.otp,
         newPassword: resetForm.newPassword,
       });
       toast.success("Password reset successful! You can now log in.");
@@ -127,11 +160,43 @@ export default function Login() {
     }
   };
 
+  // MFA handlers
+  const handleMfaChange = (e) => setMfaCode(e.target.value);
+
+  const handleMfaSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_URL}/auth/verify-mfa`, {
+        email: mfaEmail,
+        code: mfaCode,
+      }, { withCredentials: true });
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+      toast.success("MFA verified! Login successful.");
+      setShowMfa(false);
+      setTimeout(() => navigate("/"), 1000);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "MFA verification failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMfaCancel = () => {
+    setShowMfa(false);
+    setMfaEmail("");
+    setMfaCode("");
+    setForm({ ...form, password: "" });
+  };
+
   return (
     <div className="main-home">
       <ToastContainer />
       {loading && <Loader />}
-      {!showForgot && (
+      {!showForgot && !showMfa && (
         <LoginForm
           form={form}
           onChange={handleChange}
@@ -139,7 +204,7 @@ export default function Login() {
           onForgot={() => setShowForgot(true)}
         />
       )}
-      {showForgot && !showReset && (
+      {showForgot && !showReset && !showMfa && (
         <ForgotForm
           email={forgotEmail}
           onChange={e => setForgotEmail(e.target.value)}
@@ -150,7 +215,7 @@ export default function Login() {
           }}
         />
       )}
-      {showForgot && showReset && (
+      {showForgot && showReset && !showMfa && (
         <ResetForm
           form={resetForm}
           onChange={handleResetChange}
@@ -161,6 +226,15 @@ export default function Login() {
             setForgotEmail("");
             setResetForm({ email: "", otp: "", newPassword: "" });
           }}
+        />
+      )}
+      {showMfa && (
+        <MfaForm
+          email={mfaEmail}
+          code={mfaCode}
+          onChange={handleMfaChange}
+          onSubmit={handleMfaSubmit}
+          onCancel={handleMfaCancel}
         />
       )}
     </div>

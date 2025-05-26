@@ -63,6 +63,7 @@ async function sendMfaCodeEmail(email, code) {
         text: `Your MFA code is: ${code}`,
     });
 }
+
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -77,19 +78,25 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
- if (user.mfaEnabled) {
+        // Only require MFA if enabled
+        if (user.mfaEnabled) {
+            // Generate a 6-digit code and expiry
             const code = Math.floor(100000 + Math.random() * 900000).toString();
             user.mfaCode = code;
             user.mfaCodeExpiry = Date.now() + 5 * 60 * 1000; // 5 mins
             await user.save();
 
-            await sendMfaCodeEmail(user.email, code);//this line is not makin me log in its the error
+            // Send code via email
+            await sendMfaCodeEmail(user.email, code);
 
+            // Do NOT send token/user yet
             return res.status(200).json({
                 message: "MFA code sent to your email",
                 mfaRequired: true
             });
         }
+
+        // If MFA not enabled, proceed as normal
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.SECRET_KEY,
@@ -97,12 +104,11 @@ exports.login = async (req, res) => {
         );
 
         res.cookie("token", token, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === "production", 
-            maxAge: 3600000, //(1 hour)
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 3600000,
         });
 
-        // Send user info along with token
         res.status(200).json({
             message: "Login successful",
             token,
@@ -117,7 +123,6 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 };
-
 
 exports.logout = (req, res) => {
     res.clearCookie("token", {
@@ -294,12 +299,12 @@ exports.enableMfa = async (req, res) => {
         res.status(500).json({ message: "Server error", error: err });
     }
 };
-exports.verifyMfa= async (req, res) => {
+exports.verifyMfa = async (req, res) => {
     try {
         const { email, code } = req.body;
 
         const user = await User.findOne({ email });
-        if (!user || !user.mfaEnabled) {
+        if (!user) {
             return res.status(400).json({ message: "Invalid request" });
         }
 
@@ -522,5 +527,30 @@ exports.topUpWallet = async (req, res) => {
         res.json({ message: "Wallet topped up successfully", wallet: user.wallet });
     } catch (err) {
         res.status(500).json({ message: "Failed to top up wallet", error: err.message });
+    }
+};
+exports.enableMfa = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        user.mfaEnabled = true;
+        await user.save();
+        res.status(200).json({ message: "MFA enabled" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+exports.disableMfa = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        user.mfaEnabled = false;
+        await user.save();
+        res.status(200).json({ message: "MFA disabled" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
     }
 };
