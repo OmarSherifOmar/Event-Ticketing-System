@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const API_URL = "http://localhost:5000/api/v1/users";
 
 function DeleteUser() {
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [message, setMessage] = useState("");
+     const navigate = useNavigate(); // You need to call this hook inside a component
 
+useEffect(() => {
+  const checkAuthorization = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      // Immediate check for basic authorization
+      if (!token || !user || ![ "System Admin"].includes(user.role)) {
+        navigate("/Unauthorized");
+        return;
+      } 
+    } catch (err) {
+      navigate("/Unauthorized");
+    }
+};
+checkAuthorization();
+})
   useEffect(() => {
     // Fetch all users for selection
     axios

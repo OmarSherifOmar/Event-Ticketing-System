@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const API_URL = "http://localhost:5000/api/v1/users";
 
 function EditUserRole() {
@@ -8,6 +8,7 @@ function EditUserRole() {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [newRole, setNewRole] = useState("");
   const [message, setMessage] = useState("");
+   const navigate = useNavigate(); // You need to call this hook inside a component
 
   useEffect(() => {
     // Fetch all users for selection
@@ -15,7 +16,23 @@ function EditUserRole() {
       .then(res => setUsers(res.data))
       .catch(() => setUsers([]));
   }, []);
-
+useEffect(() => {
+  const checkAuthorization = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      // Immediate check for basic authorization
+      if (!token || !user || !["System Admin"].includes(user.role)) {
+        navigate("/Unauthorized");
+        return;
+      }
+    } catch (err) {
+      navigate("/Unauthorized");
+    }
+};
+checkAuthorization();
+})
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedUserId || !newRole) {

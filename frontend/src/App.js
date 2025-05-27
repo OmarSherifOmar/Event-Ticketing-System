@@ -18,6 +18,7 @@ import CreateEventPage from "./components/CreateEventPage.jsx";
 import AdminEventsPage from "./components/AdminEvents.jsx";
 import EditEvent from "./components/EventView/EditEvent.jsx";
 import AllEventsList from "./components/EventView/AllEventsList";
+import Unauthorized from "./components/Unauthorized.jsx";
 function App() {
   return (
     <ThemeProvider>
@@ -40,6 +41,8 @@ function App() {
           <Route path="/admin/events" element={<><NavBar /><AdminEventsPage /><Footer/></>} />
           <Route path="/edit-event/:id" element={<><NavBar /><EditEvent /><Footer/></>} />
           <Route path="/all-events" element={<AllEventsList />} />
+                    <Route path="/Unauthorized" element={<Unauthorized />} />
+
         </Routes>
       </Router>
     </ThemeProvider>

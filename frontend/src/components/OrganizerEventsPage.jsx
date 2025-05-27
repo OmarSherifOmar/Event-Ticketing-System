@@ -12,6 +12,23 @@ const OrganizerEventsPage = () => {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const navigate = useNavigate();
 
+useEffect(() => {
+  const checkAuthorization = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      // Immediate check for basic authorization
+      if (!token || !user || ![ "Organizer"].includes(user.role)) {
+        navigate("/Unauthorized");
+        return;
+      } 
+    } catch (err) {
+      navigate("/Unauthorized");
+    }
+};
+checkAuthorization();
+})
   useEffect(() => {
     // Get user from localStorage
     const storedUser = localStorage.getItem("user");

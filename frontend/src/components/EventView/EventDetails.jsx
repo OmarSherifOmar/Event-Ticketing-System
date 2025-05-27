@@ -107,7 +107,7 @@ function EventDetails() {
     );
   }
 
-  const isOrganizeroradmin = (user.role === "Organizer"&&event.organizer==user._id||user.role === "System Admin");
+  const isOrganizer = (user.role === "Organizer"&&event.organizer==user._id);
   const imageUrl = event.image?.startsWith("http") ? event.image : `https://${event.image}`;
 
  return (
@@ -116,8 +116,12 @@ function EventDetails() {
       <img className="event-details-image" src={imageUrl} alt={event.title || "Event"} />
       
       <div className="event-details-info">
-        <h1>{event.title || "No Title"}</h1>
-        <div className="event-details-row">
+          <div className="event-header">
+            <h1>{event.title || "No Title"}</h1>
+            <div className={`event-status ${event.status}`}>
+              {event.status.toUpperCase()}
+            </div>
+         
           <MdLocationOn className="details-icon" />
           <span>{event.location || "No Location"}</span>
         </div>
@@ -146,7 +150,7 @@ function EventDetails() {
         </div>
 
         {/* Moved organizer controls here */}
-        {isOrganizeroradmin && (
+        {isOrganizer && (
           <div className="organizer-controls" style={{ marginTop: '20px' }}>
             <Button 
               className="edit-event-btn"

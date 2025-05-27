@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/AdminSettings.css";
-
+import { useEffect } from "react";
 function AdminSettings() {
   const navigate = useNavigate();
 
@@ -19,7 +19,23 @@ function AdminSettings() {
   const handleEditEventStatus = () => {
     navigate("/admin/events");
   };
-
+  useEffect(() => {
+    const checkAuthorization = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+        
+        // Immediate check for basic authorization
+        if (!token || !user || ![ "System Admin"].includes(user.role)) {
+          navigate("/Unauthorized");
+          return;
+        } 
+      } catch (err) {
+        navigate("/Unauthorized");
+      }
+  };
+  checkAuthorization();
+  })
   return (
     <div className="admin-settings-container">
       <h2>Admin Settings</h2>
